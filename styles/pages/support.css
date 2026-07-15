@@ -1,0 +1,276 @@
+.main {
+    padding: 40px 0 80px;
+    background: #f8f9fb;
+}
+
+.container {
+    width: 75rem;
+    margin: 0 auto;
+}
+
+.page-container {
+    display: flex;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.support-hero {
+    margin-bottom: 45px;
+}
+
+.support-box {
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
+}
+
+.support-title {
+    text-align: right;
+    font-size: 25px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.support-banner {
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+}
+
+
+.faq {
+    margin-bottom: 50px;
+}
+
+.faq-title {
+    text-align: center;
+    color: #e60000;
+    font-size: 32px;
+    margin-bottom: 35px;
+}
+
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.accordion details {
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: .3s;
+}
+
+.accordion details:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+}
+
+.accordion summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 20px 25px;
+    font-size: 18px;
+    color: #333;
+    position: relative;
+    transition: .3s;
+}
+
+.accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.accordion summary::before {
+    content: "+";
+    position: absolute;
+    left: 25px;
+    font-size: 24px;
+    color: #0d6efd;
+    transition: .3s;
+}
+
+.accordion details[open] summary::before {
+    transform: rotate(45deg);
+}
+
+.accordion summary:hover {
+    color: #0d6efd;
+}
+
+.accordion p {
+    padding: 0 25px 25px;
+    color: #666;
+    line-height: 2.2;
+}
+
+
+.contact-support {
+    margin-bottom: 50px;
+}
+
+.contact-box {
+    background: #fff;
+    padding: 35px;
+    border-radius: 16px;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
+}
+
+.contact-box h2 {
+    color: #0b8b25;
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.contact-box ul {
+    list-style: disc;
+    padding-right: 25px;
+}
+
+.contact-box li {
+    margin-bottom: 18px;
+    line-height: 2;
+    color: #444;
+}
+
+.contact-box a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-box a:hover {
+    text-decoration: underline;
+}
+
+/*=====================================
+        RESPONSIVE
+======================================*/
+
+
+/* sidebar */
+
+.list-page_sidebar {
+    width: 35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid;
+    border-radius: 18px;
+    padding: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+    transition: all ease-in-out 0.5s;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.list-page_sidebar::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(transparent 0deg,
+            transparent 280deg,
+            #5da9ff 320deg,
+            transparent 360deg);
+    animation: rotateBorder 8s ease-in-out infinite;
+    z-index: -2;
+}
+
+.list-page_sidebar::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background: white;
+    border-radius: 13px;
+    z-index: -1;
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.list-page_sidebar:hover {
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .2);
+    transform: translateY(-8px);
+}
+
+
+
+.list-page_sidebar_title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.list-page_sidebar_box {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.7;
+    text-decoration: none;
+}
+
+.list-page_sidebar_box--blue {
+    background: linear-gradient(135deg, #37AFE2, #229ED9);
+    color: #fff;
+    font-weight: 600;
+}
+
+.list-page_sidebar_box--purple {
+    background: linear-gradient(#DD2A7B,
+            #8134AF,
+            #515BD4);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* responsive */
+
+@media (max-width:1200px) {
+    .container {
+        width: 95%;
+    }
+}
+
+@media (max-width:768px) {
+    .support-title,
+    .faq-title {
+        font-size: 24px;
+    }
+
+    .contact-box,
+    .form-box,
+    .status-box,
+    .support-box {
+        padding: 20px;
+    }
+
+    .form-box button {
+        width: 100%;
+    }
+
+}
+
+@media (max-width:670px){
+
+    .accordion summary::before{
+        left: 0;
+        top: 0;
+    }
+}
