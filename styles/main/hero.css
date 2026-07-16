@@ -58,6 +58,7 @@
     flex-wrap: wrap;
 }
 
+
 .hero-stats {
     display: flex;
     gap: var(--spacing-xl);
