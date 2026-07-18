@@ -61,12 +61,12 @@ a {
 
 /* Website Logo */
 .website-logo {
-    padding-left: 0.75rem;
+    padding: 0.5rem 0 0 0.75rem;
 }
 
 .website-logo_img {
-    width: 5rem;
-    height: 3rem;
+    width: 3rem;
+    height: 3.3rem;
 }
 
 /* Mobile Menu - Glass Effect */

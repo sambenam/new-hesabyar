@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="../styles/header/top-header.css" />
     <link rel="stylesheet" href="../styles/header/bottom-header.css" />
     <link rel="stylesheet" href="../styles/header/mobile-header.css" />
+    <link rel="stylesheet" href="../styles/pages/list-pages.css" />
     <link rel="stylesheet" href="../styles/main/main.css" />
-    <link rel="stylesheet" href="../styles/main/list-page.css" />
     <link rel="stylesheet" href="../styles/footer/main-footer.css" />
     <link
       rel="stylesheet"
@@ -279,6 +279,19 @@
                 </li>
               </ul>
             </nav>
+            <button
+              id="themeToggleBtn"
+              class="theme-toggle"
+              aria-label="تغییر تم"
+            >
+              <span class="theme-toggle-track-icons"
+                ><span>🌙</span><span>☀️</span></span
+              >
+              <span class="theme-toggle-knob">
+                <span class="icon-sun">☀️</span>
+                <span class="icon-moon">🌙</span>
+              </span>
+            </button>
           </div>
         </div>
       </section>
@@ -609,10 +622,11 @@
     </footer>
 
     <!-- scripts -->
-    <script src="../scripts/single-post.js"></script>
+    <!-- scripts - ترتیب درست و فقط اسکریپت‌های لازم برای لیست پیج -->
+     <script src="../scripts/index.js"></script>
     <script src="../scripts/header-items.js"></script>
+    <script src="../scripts/main-items.js"></script>
     <script src="../scripts/data.js"></script>
     <script src="../scripts/list-page.js"></script>
-    <script src="../scripts/main-items.js"></script>
   </body>
 </html>

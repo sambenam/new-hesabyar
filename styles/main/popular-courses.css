@@ -17,6 +17,8 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-top: 40px;
+    list-style-type: none;
+    padding: 0;
 }
 
 .popular-courses_item {
@@ -34,12 +36,6 @@
     border-color: var(--accent-primary);
 }
 
-.popular-courses_banner {
-    position: relative;
-    height: 11rem;
-    overflow: hidden;
-}
-
 .popular-courses_img {
     width: 100%;
     height: 100%;
@@ -49,15 +45,6 @@
 
 .popular-courses_item:hover .popular-courses_img {
     transform: scale(1.08);
-}
-
-.popular-courses_banner::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, .55),
-            rgba(0, 0, 0, 0));
 }
 
 .popular-courses_badge {
@@ -128,10 +115,22 @@
     .popular-courses_items {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .popular-courses_item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 }
 
 @media(max-width:768px) {
     .popular-courses_items {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width:450px){
+    .popular-courses_banner{
+        display: none;
     }
 }

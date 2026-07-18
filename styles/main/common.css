@@ -63,7 +63,7 @@ body {
 
 .see-all-link {
     color: var(--accent-secondary);
-    font-size: var(--font-size-sm);
+    font-size: 1.2rem;
     font-weight: var(--font-weight-medium);
     display: flex;
     align-items: center;
