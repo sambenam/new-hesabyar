@@ -1,6 +1,8 @@
 const postTitle = document.getElementById("post-title");
 const postImage = document.getElementById("post-image");
 const postContent = document.getElementById("post-content");
+const postVideo = document.getElementById("post-video");
+const postDownloads = document.getElementById("post-downloads");
 const backLink = document.getElementById("back-link");
 
 const postId = new URLSearchParams(window.location.search).get("id");
@@ -9,9 +11,11 @@ function loadSinglePost() {
   if (!postId) {
     postTitle.textContent = "مطلب پیدا نشد";
     postImage.style.display = "none";
-    postContent.textContent = "شناسه مطلب در آدرس وجود ندارد.";
+    postContent.innerHTML = "شناسه مطلب در آدرس وجود ندارد.";
+    if (postVideo) postVideo.hidden = true;
+    if (postDownloads) postDownloads.hidden = true;
     backLink.textContent = "بازگشت به صفحه اصلی";
-    backLink.href = "home.html";
+    backLink.href = "index.html";
     return;
   }
 
@@ -26,9 +30,13 @@ function loadSinglePost() {
       postTitle.textContent = post.title;
       postImage.src = post.image;
       postImage.alt = post.title;
-      // the bottom line => if you want change the content with backtick use -- postContent.innerHtml = post.content -- instead of -- postContent.textContent = post.content --
-      postContent.innerHTML = post.content;
-      //
+
+      renderItemContent(post, {
+        body: postContent,
+        video: postVideo,
+        downloads: postDownloads,
+      });
+
       backLink.textContent = "بازگشت به " + category.title;
       backLink.href = "list-page.html?cat=" + slug;
       return;
@@ -37,9 +45,11 @@ function loadSinglePost() {
 
   postTitle.textContent = "مطلب پیدا نشد";
   postImage.style.display = "none";
-  postContent.textContent = "مطلب مورد نظر پیدا نشد.";
+  postContent.innerHTML = "مطلب مورد نظر پیدا نشد.";
+  if (postVideo) postVideo.hidden = true;
+  if (postDownloads) postDownloads.hidden = true;
   backLink.textContent = "بازگشت به صفحه اصلی";
-  backLink.href = "home.html";
+  backLink.href = "index.html";
 }
 
 loadSinglePost();

@@ -1151,3 +1151,122 @@ body {
         display: none;
     }
 }
+
+/* Site content editor */
+.modal-box--wide {
+    max-width: 820px;
+    width: calc(100% - 32px);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.content-editor_meta {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(0, 122, 255, 0.06);
+}
+
+.content-editor_meta-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.content-editor_section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.content-editor_section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.content-editor_section-header h4 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.content-editor_toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.content-editor_toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.content-blocks-editor,
+.content-downloads-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.content-block-card {
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.content-block-card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.content-block-card_actions {
+    display: flex;
+    gap: 6px;
+}
+
+.content-download-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 0.7fr 0.7fr auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.content-editor_empty {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+#siteContentTable code {
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.06);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+    .content-download-row,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

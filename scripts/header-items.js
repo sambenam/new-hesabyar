@@ -14,8 +14,15 @@ const headerItems = {
                 excerpt:
                   "در این مطلب می‌توانید کتاب دانش فنی پایه مربوط به رشته حسابداری را به صورت رایگان دانلود کنید.",
                 image: "../images/ravin.png",
-                content:
-                  "متن کامل کتاب دانش فنی پایه حسابداری اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
               {
                 id: "diploma-2",
@@ -23,8 +30,15 @@ const headerItems = {
                 excerpt:
                   "در این مطلب می‌توانید کتاب دانش فنی تخصصی مربوط به رشته حسابداری را به صورت رایگان دانلود کنید.",
                 image: "../images/ravin.png",
-                content:
-                  "متن کامل کتاب دانش فنی تخصصی حسابداری اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -36,14 +50,30 @@ const headerItems = {
                 title: "دانلود رایگان جزوه کاردانی مقدماتی",
                 excerpt: "جزوه آموزشی مقدماتی برای دانشجویان کاردانی حسابداری.",
                 image: "../images/mafroozat hesabdari.webp",
-                content: "متن کامل جزوه کاردانی مقدماتی اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
               {
                 id: "associate_degree-2",
                 title: "دانلود رایگان جزوه کاردانی تخصصی",
                 excerpt: "جزوه آموزشی تخصصی برای دانشجویان کاردانی حسابداری.",
                 image: "../images/hoghog 405.webp",
-                content: "متن کامل جزوه کاردانی تخصصی اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -55,8 +85,15 @@ const headerItems = {
                 title: "دانلود رایگان کتاب کارشناسی حسابداری مالی",
                 excerpt: "کتاب آموزشی حسابداری مالی برای دانشجویان کارشناسی.",
                 image: "../images/estehlak daraie.webp",
-                content:
-                  "متن کامل کتاب کارشناسی حسابداری مالی اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -68,7 +105,15 @@ const headerItems = {
                 title: "دانلود رایگان جزوه ارشد حسابداری",
                 excerpt: "جزوه آموزشی برای دانشجویان ارشد حسابداری.",
                 image: "../images/amoozesh estehlak.webp",
-                content: "متن کامل جزوه ارشد حسابداری اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -80,7 +125,15 @@ const headerItems = {
                 title: "دانلود رایگان منابع دکتری حسابداری",
                 excerpt: "منابع و جزوات آموزشی برای دانشجویان دکتری حسابداری.",
                 image: "../images/ahkam malait.webp",
-                content: "متن کامل منابع دکتری حسابداری اینجا قرار می‌گیرد.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -98,7 +151,15 @@ const headerItems = {
                 excerpt:
                   "نمونه مطلب کنکور — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/osool hesabdari.webp",
-                content: "متن نمونه کنکور.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
               {
                 id: "konkur1-2",
@@ -106,7 +167,15 @@ const headerItems = {
                 excerpt:
                   "نمونه مطلب کنکور — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/amozesh mohasebeh.webp",
-                content: "متن نمونه کنکور.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -118,7 +187,15 @@ const headerItems = {
                 title: "ضرایب کنکور کاردانی حسابداری",
                 excerpt: "نمونه مطلب — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/osool hesabdari.webp",
-                content: "متن نمونه.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -130,7 +207,15 @@ const headerItems = {
                 title: "روش مطالعه برای کنکور حسابداری",
                 excerpt: "نمونه مطلب — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/amozesh mohasebeh.webp",
-                content: "متن نمونه.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -147,7 +232,15 @@ const headerItems = {
                 title: "پروژه کارآفرینی تاسیس آموزشگاه حسابداری",
                 excerpt: "طرح توجیهی کسب و کار برای دانشجویان حسابداری.",
                 image: "../images/osool hesabdari.webp",
-                content: "متن نمونه پروژه کارآفرینی.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -160,7 +253,15 @@ const headerItems = {
                 excerpt:
                   "نمونه پروژه کارآموزی — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/mafroozat hesabdari.webp",
-                content: "متن نمونه.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -172,7 +273,15 @@ const headerItems = {
                 title: "پروژه مالی و حسابداری",
                 excerpt: "نمونه پروژه — بعداً محتوای واقعی جایگزین می‌شود.",
                 image: "../images/hoghog 405.webp",
-                content: "متن نمونه.",
+                content: {
+                  blocks: [
+                    { type: "heading", level: 1, text: "" },
+                    { type: "paragraph", text: "" },
+                    { type: "list", ul: "" },
+                  ],
+                  video: null,
+                  downloads: [],
+                },
               },
             ],
           },
@@ -192,14 +301,30 @@ const headerItems = {
             title: "دانلود رایگان پاورپوینت استاندارد حسابداری",
             excerpt: "پاورپوینت استاندارد حسابداری ۴۲.",
             image: "../images/osool hesabdari.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
           {
             id: "power_point-2",
             title: "دانلود رایگان پاورپوینت سیستم مالی شرکت ها",
             excerpt: "جلسه اول درس سیستم های اطلاعاتی حسابداری.",
             image: "../images/amozesh mohasebeh.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -211,14 +336,30 @@ const headerItems = {
             title: "دانلود اکسل حسابداری پیمانکاری",
             excerpt: "فایل اکسل حسابداری پیمانکاری با گزارش سود و زیان پروژه.",
             image: "../images/excel-reconciliation-220x150.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
           {
             id: "Exel-2",
             title: "دانلود اکسل محاسبه مالیات خودرو (رایگان)",
             excerpt: "اکسل محاسبه مالیات خودرو.",
             image: "../images/mohasebe maliat khodro.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -230,7 +371,15 @@ const headerItems = {
             title: "دانلود فایل ورد نمونه",
             excerpt: "نمونه فایل ورد — بعداً محتوای واقعی جایگزین می‌شود.",
             image: "../images/osool hesabdari.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -248,7 +397,15 @@ const headerItems = {
             title: "مقاله نمونه حسابداری",
             excerpt: "نمونه مقاله — بعداً محتوای واقعی جایگزین می‌شود.",
             image: "../images/osool hesabdari.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -272,7 +429,15 @@ const headerItems = {
             title: "استاندارد نمونه حسابداری",
             excerpt: "نمونه استاندارد — بعداً محتوای واقعی جایگزین می‌شود.",
             image: "../images/osool hesabdari.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -284,7 +449,15 @@ const headerItems = {
             title: "بخشنامه نمونه حسابداری",
             excerpt: "نمونه بخشنامه — بعداً محتوای واقعی جایگزین می‌شود.",
             image: "../images/madeh 95.webp",
-            content: "متن نمونه.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },
@@ -302,7 +475,15 @@ const headerItems = {
             title: "آموزش مغایرت گیری در اکسل به زبان ساده",
             excerpt: "آموزش کامل مغایرت گیری بانکی در اکسل.",
             image: "../images/excel-reconciliation-220x150.webp",
-            content: "متن کامل آموزش مغایرت گیری در اکسل اینجا قرار می‌گیرد.",
+            content: {
+              blocks: [
+                { type: "heading", level: 1, text: "" },
+                { type: "paragraph", text: "" },
+                { type: "list", ul: "" },
+              ],
+              video: null,
+              downloads: [],
+            },
           },
         ],
       },

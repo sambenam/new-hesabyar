@@ -13,6 +13,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const subtitleElem = document.getElementById("receiptSubtitle");
   const statusBadge = document.getElementById("statusBadge");
   const actionsContainer = document.getElementById("receiptActions");
+  const orderIdElem = document.getElementById("orderId");
+  const trxIdElem = document.getElementById("trxId");
+  const amountElem = document.querySelector(".price-text");
+  const orderId = urlParams.get("orderId");
+
+  if (orderIdElem && orderId) {
+    orderIdElem.textContent = orderId;
+  }
+  if (trxIdElem && orderId) {
+    trxIdElem.textContent = "TRX-" + orderId.slice(-8).toUpperCase();
+  }
+  try {
+    const checkout = JSON.parse(sessionStorage.getItem("hesabyarCheckout") || "{}");
+    if (amountElem && checkout.finalAmount) {
+      amountElem.textContent = Number(checkout.finalAmount).toLocaleString("fa-IR") + " تومان";
+    }
+  } catch (error) {
+    console.warn("receipt: اطلاعات سفارش خوانده نشد", error);
+  }
 
   if (status === "success") {
     card.classList.add("success");

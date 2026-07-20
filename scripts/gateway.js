@@ -6,7 +6,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   initCardFormatting();
   initCountdownTimer();
+  initCaptcha();
+  initPaymentForm();
 });
+
+function toEnglishDigits(value) {
+  return String(value || "")
+    .replace(/[۰-۹]/g, (digit) => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
+    .replace(/[٠-٩]/g, (digit) => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
+}
 
 // 1. Auto format card number with dashes every 4 digits
 function initCardFormatting() {
@@ -33,9 +41,13 @@ function refreshCaptcha() {
   const captchaSpan = document.getElementById("captchaCode");
   if (!captchaSpan) return;
 
-  // Generate random 5-digit number
   const randomCode = Math.floor(10000 + Math.random() * 90000);
-  captchaSpan.textContent = randomCode;
+  captchaSpan.dataset.value = String(randomCode);
+  captchaSpan.textContent = randomCode.toLocaleString("fa-IR");
+}
+
+function initCaptcha() {
+  refreshCaptcha();
 }
 
 // 3. Request OTP / Dynamic Password
@@ -56,10 +68,80 @@ function requestOtp() {
     if (countdown < 0) {
       clearInterval(timer);
       btn.innerHTML = '<i class="fas fa-paper-plane"></i> دریافت رمز پویا';
-      (btn.disabled, false);
+      btn.disabled = false;
       btn.style.opacity = "1";
     }
   }, 1000);
+}
+
+function initPaymentForm() {
+  const form = document.getElementById("desktopPaymentForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const cardNumber = document.getElementById("cardNumber").value.replace(/\D/g, "");
+    const cvv = document.getElementById("cvv2").value.replace(/\D/g, "");
+    const month = Number(toEnglishDigits(document.getElementById("expMonth").value));
+    const captchaInput = toEnglishDigits(document.getElementById("captchaInput").value);
+    const captchaCode = document.getElementById("captchaCode").dataset.value;
+    const submit = form.querySelector('[type="submit"]');
+
+    if (cardNumber.length !== 16) {
+      showGatewayMessage("شماره کارت باید ۱۶ رقمی باشد.", "error");
+      return;
+    }
+    if (cvv.length < 3 || cvv.length > 4 || month < 1 || month > 12) {
+      showGatewayMessage("اطلاعات کارت را به‌درستی وارد کنید.", "error");
+      return;
+    }
+    if (captchaInput !== captchaCode) {
+      showGatewayMessage("کد امنیتی صحیح نیست.", "error");
+      refreshCaptcha();
+      return;
+    }
+
+    let checkout = {};
+    try {
+      checkout = JSON.parse(sessionStorage.getItem("hesabyarCheckout") || "{}");
+    } catch (error) {
+      checkout = {};
+    }
+
+    if (!checkout.finalAmount) {
+      showGatewayMessage("اطلاعات سفارش پیدا نشد؛ دوباره از صفحه خرید شروع کنید.", "error");
+      return;
+    }
+
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = "در حال پردازش...";
+    }
+
+    try {
+      const result = await appApi.commerce.createPayment({ amount: checkout.finalAmount });
+      window.location.href = `receipt.html?status=${result.status}&orderId=${encodeURIComponent(result.orderId)}`;
+    } catch (error) {
+      showGatewayMessage(error.message, "error");
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = "پرداخت نهایی";
+      }
+    }
+  });
+}
+
+function showGatewayMessage(message, type) {
+  const form = document.getElementById("desktopPaymentForm");
+  if (!form) return;
+  let messageEl = form.querySelector(".gateway-message");
+  if (!messageEl) {
+    messageEl = document.createElement("p");
+    messageEl.className = "gateway-message";
+    form.prepend(messageEl);
+  }
+  messageEl.textContent = message;
+  messageEl.dataset.type = type || "info";
 }
 
 // 4. Topbar Countdown Timer (9:50 counting down)

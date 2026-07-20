@@ -144,3 +144,19 @@ body {
     padding: var(--spacing-md) var(--spacing-2xl);
     font-size: var(--font-size-lg);
 }
+.shell-form-message {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    font-size: .78rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.shell-form-message[data-type="success"] {
+    color: #16a34a;
+}
+
+.shell-form-message[data-type="error"] {
+    color: #dc2626;
+}

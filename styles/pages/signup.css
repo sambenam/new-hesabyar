@@ -326,3 +326,22 @@ html[data-theme="light"] .checkbox-label a {
         align-items: flex-start;
     }
 }
+.auth-form-message {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.8;
+    background: rgba(59, 130, 246, .1);
+    color: var(--primary);
+}
+
+.auth-form-message[data-type="success"] {
+    background: rgba(34, 197, 94, .12);
+    color: #16a34a;
+}
+
+.auth-form-message[data-type="error"] {
+    background: rgba(239, 68, 68, .12);
+    color: #dc2626;
+}

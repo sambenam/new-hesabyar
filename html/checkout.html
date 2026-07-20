@@ -53,9 +53,10 @@
           <input
             type="text"
             class="form-control"
+            id="discountInput"
             placeholder="کد تخفیف دارید؟ وارد کنید"
           />
-          <button class="btn-secondary" onclick="alert('کد تخفیف اعمال شد!')">
+          <button type="button" class="btn-secondary" id="discountBtn">
             اعمال کد
           </button>
         </div>
@@ -66,9 +67,9 @@
             <span>مجموع قیمت کالاها و دوره‌ها:</span>
             <span>۳۳,۰۰۰,۰۰۰ تومان</span>
           </div>
-          <div class="summary-row">
+          <div class="summary-row" id="discountRow" hidden>
             <span>تخفیف اعمال شده:</span>
-            <span style="color: var(--success)">۰ تومان</span>
+            <span id="discountAmount" style="color: var(--success)">۰ تومان</span>
           </div>
           <div class="summary-row">
             <span>مالیات ارزش افزوده:</span>
@@ -83,7 +84,7 @@
           />
           <div class="summary-row total">
             <span>مبلغ قابل پرداخت نهایی:</span>
-            <span style="color: var(--primary)">۳۳,۰۰۰,۰۰۰ تومان</span>
+            <span id="cartFinalPrice" style="color: var(--primary)">۳۳,۰۰۰,۰۰۰ تومان</span>
           </div>
         </div>
 
@@ -110,6 +111,8 @@
         </div>
       </div>
     </div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/app-shell.js"></script>
     <script src="../scripts/checkout.js"></script>
   </body>
 </html>

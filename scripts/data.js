@@ -10,10 +10,14 @@ const siteData = (() => {
   console.log("✅ data.js: headerItems keys:", Object.keys(fromHeader));
   console.log("✅ data.js: mainItems keys:", Object.keys(fromMain));
 
-  return {
+  const merged = {
     ...fromHeader,
     ...fromMain,
   };
+
+  return typeof applyContentOverrides === "function"
+    ? applyContentOverrides(merged)
+    : merged;
 })();
 
 console.log("📦 siteData نهایی شامل این دسته‌هاست:", Object.keys(siteData));

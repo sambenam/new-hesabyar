@@ -78,6 +78,184 @@
     background: rgba(255, 255, 255, .03);
 }
 
+.single-post_body {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 2.1;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.single-post_body h2,
+.single-post_body h3,
+.single-post_body h4 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin: 1.6rem 0 .85rem;
+    line-height: 1.65;
+}
+
+.single-post_body h2 {
+    font-size: 1.35rem;
+}
+
+.single-post_body h3 {
+    font-size: 1.15rem;
+}
+
+.single-post_body p {
+    margin-bottom: 1rem;
+}
+
+.single-post_body ul,
+.single-post_body ol {
+    margin: .5rem 0 1.2rem;
+    padding-right: 1.4rem;
+}
+
+.single-post_body li {
+    margin-bottom: .45rem;
+}
+
+.single-post_body a {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+.single-post_body blockquote {
+    margin: 1.25rem 0;
+    padding: 1rem 1.2rem;
+    border-right: 4px solid #60a5fa;
+    border-radius: 10px;
+    background: rgba(96, 165, 250, .08);
+    color: var(--text-primary);
+}
+
+.single-post_body blockquote cite {
+    display: block;
+    margin-top: .5rem;
+    color: var(--text-secondary);
+    font-size: .85rem;
+    font-style: normal;
+}
+
+.single-post_body figure {
+    margin: 1.4rem 0;
+    text-align: center;
+}
+
+.single-post_body figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 14px;
+}
+
+.single-post_body figcaption {
+    margin-top: .5rem;
+    color: var(--text-secondary);
+    font-size: .85rem;
+}
+
+.single-post_body hr {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.single-post_body::selection {
+    background: rgba(59, 130, 246, .3);
+}
+
+.single-post_video {
+    margin-bottom: 1.8rem;
+}
+
+.single-post_video_wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .25);
+    background: #000;
+}
+
+.single-post_video_wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.single-post_video_player {
+    width: 100%;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: #000;
+}
+
+.single-post_downloads {
+    margin-top: .5rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.single-post_downloads_title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.single-post_downloads_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.single-post_download_link {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: .95rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .04);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all .25s;
+}
+
+.single-post_download_link:hover {
+    background: rgba(255, 255, 255, .08);
+    border-color: rgba(96, 165, 250, .45);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.single-post_download_link i {
+    font-size: 1.25rem;
+    color: #60a5fa;
+    flex-shrink: 0;
+}
+
+.single-post_download_link span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.single-post_download_size {
+    font-size: .82rem;
+    color: var(--text-secondary);
+    opacity: .75;
+}
+
+/* backward compat alias */
 .single-post_text {
     font-size: 1rem;
     color: var(--text-secondary);
@@ -194,8 +372,25 @@ html[data-theme="light"] .single-post_image {
     background: #f8fafc !important;
 }
 
+html[data-theme="light"] .single-post_body,
 html[data-theme="light"] .single-post_text {
     color: #334155 !important;
+}
+
+html[data-theme="light"] .single-post_body h2,
+html[data-theme="light"] .single-post_body h3,
+html[data-theme="light"] .single-post_body h4 {
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .single-post_download_link {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] .single-post_download_link:hover {
+    background: #ffffff !important;
+    border-color: #93c5fd !important;
 }
 
 html[data-theme="light"] .single-post_sidebar {

@@ -123,6 +123,13 @@
             </ul>
           </li>
 
+          <li data-view="site-content">
+            <a href="#site-content">
+              <i class="fas fa-file-alt"></i>
+              <span>محتوای سایت</span>
+            </a>
+          </li>
+
           <li data-view="analytics">
             <a href="#analytics">
               <i class="fas fa-chart-line"></i>
@@ -653,6 +660,46 @@
         </div>
       </div>
 
+      <!-- VIEW: SITE CONTENT -->
+      <div id="view-site-content" class="admin-view">
+        <div class="dashboard-content">
+          <div class="page-title">
+            <h1>مدیریت محتوای آیتم‌ها</h1>
+            <p>ویرایش متن، بلوک‌های محتوا، ویدیو و فایل‌های دانلود</p>
+          </div>
+
+          <div class="glass-card">
+            <div
+              class="card-header"
+              style="display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap"
+            >
+              <h2>لیست آیتم‌های سایت</h2>
+              <input
+                type="text"
+                id="contentTableSearch"
+                class="form-control"
+                placeholder="جستجو در آیتم‌ها..."
+                style="max-width: 280px"
+              />
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="siteContentTable">
+                <thead>
+                  <tr>
+                    <th>شناسه</th>
+                    <th>عنوان</th>
+                    <th>دسته</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="siteContentTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- VIEW 6: ANALYTICS -->
       <div id="view-analytics" class="admin-view">
         <div class="dashboard-content">
@@ -881,8 +928,145 @@
       </div>
     </div>
 
+    <!-- MODAL: EDIT SITE CONTENT -->
+    <div class="modal-overlay" id="editContentModal">
+      <div class="modal-box modal-box--wide">
+        <div class="modal-header">
+          <h3>ویرایش محتوای آیتم</h3>
+          <button class="modal-close" onclick="closeModal('editContentModal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="editContentForm">
+          <input type="hidden" id="editContentItemId" />
+
+          <div class="content-editor_meta">
+            <p><strong id="editContentTitle"></strong></p>
+            <p class="content-editor_meta-sub" id="editContentCategory"></p>
+          </div>
+
+          <div class="form-group">
+            <label>خلاصه (excerpt)</label>
+            <textarea
+              id="editContentExcerpt"
+              class="form-control"
+              rows="2"
+              placeholder="متن کوتاه برای کارت‌ها و لیست"
+            ></textarea>
+          </div>
+
+          <div class="content-editor_section">
+            <div class="content-editor_section-header">
+              <h4>بلوک‌های متن</h4>
+              <div class="content-editor_toolbar">
+                <button type="button" class="btn-secondary" data-add-block="heading">
+                  + عنوان
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="paragraph">
+                  + پاراگراف
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="list">
+                  + لیست
+                </button>
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  data-add-block="ordered-list"
+                >
+                  + لیست شماره‌دار
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="quote">
+                  + نقل‌قول
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="link">
+                  + لینک
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="image">
+                  + تصویر
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="divider">
+                  + جداکننده
+                </button>
+                <button type="button" class="btn-secondary" data-add-block="html">
+                  + HTML سفارشی
+                </button>
+              </div>
+            </div>
+            <div id="contentBlocksEditor" class="content-blocks-editor"></div>
+          </div>
+
+          <div class="content-editor_section">
+            <div class="content-editor_section-header">
+              <h4>ویدیو</h4>
+              <label class="content-editor_toggle">
+                <input type="checkbox" id="contentVideoEnabled" />
+                <span>نمایش ویدیو</span>
+              </label>
+            </div>
+            <div id="contentVideoFields" hidden>
+              <div class="form-group">
+                <label>لینک ویدیو</label>
+                <input
+                  type="text"
+                  id="contentVideoUrl"
+                  class="form-control"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>سرویس</label>
+                  <select id="contentVideoProvider" class="form-control select-dropdown">
+                    <option value="youtube">یوتیوب</option>
+                    <option value="aparat">آپارات</option>
+                    <option value="file">فایل مستقیم</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>عنوان ویدیو</label>
+                  <input type="text" id="contentVideoTitle" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-editor_section">
+            <div class="content-editor_section-header">
+              <h4>فایل‌های دانلود</h4>
+              <button type="button" class="btn-secondary" id="addDownloadBtn">
+                + افزودن فایل
+              </button>
+            </div>
+            <div id="contentDownloadsEditor" class="content-downloads-editor"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="closeModal('editContentModal')"
+            >
+              انصراف
+            </button>
+            <button type="button" class="btn-secondary" id="resetContentBtn">
+              بازگشت به پیش‌فرض
+            </button>
+            <button type="submit" class="btn-primary">ذخیره محتوا</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div class="toast-container" id="toastContainer"></div>
 
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/app-shell.js"></script>
+    <script src="../scripts/header-items.js"></script>
+    <script src="../scripts/item-content.js"></script>
+    <script src="../scripts/main-items.js"></script>
+    <script src="../scripts/item-store.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/admin-content.js"></script>
     <script src="../scripts/admin.js"></script>
 
   </body>

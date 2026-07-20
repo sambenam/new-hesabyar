@@ -411,3 +411,17 @@ input:focus {
         grid-template-columns: 1fr 102px;
     }
 }
+.gateway-message {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.8;
+    background: rgba(59, 130, 246, .1);
+    color: var(--primary);
+}
+
+.gateway-message[data-type="error"] {
+    background: rgba(239, 68, 68, .12);
+    color: #dc2626;
+}

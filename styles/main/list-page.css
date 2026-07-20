@@ -184,3 +184,9 @@
         object-fit:unset
     }
 }
+.list-page_empty {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    list-style: none;
+}

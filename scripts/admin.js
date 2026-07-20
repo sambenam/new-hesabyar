@@ -230,6 +230,7 @@ function initNavigation() {
           mappedView = "products";
         else if (["general", "security", "notifications"].includes(viewName))
           mappedView = "settings";
+        else if (viewName === "site-content") mappedView = "site-content";
 
         if (document.getElementById(`view-${mappedView}`)) {
           e.preventDefault();

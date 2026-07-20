@@ -3,7 +3,7 @@
  * Interactive tab switching, cart management, profile editing, and toast alerts.
  */
 
-let cartState = [
+const DEFAULT_CART = [
   {
     id: 1,
     name: "لپ‌تاپ گیمینگ ایسوس ROG",
@@ -20,12 +20,57 @@ let cartState = [
   },
 ];
 
+let cartState = loadCart();
+
+function loadCart() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("hesabyarCart") || "null");
+    return Array.isArray(saved) ? saved : DEFAULT_CART;
+  } catch (error) {
+    return DEFAULT_CART;
+  }
+}
+
+function persistCart() {
+  localStorage.setItem("hesabyarCart", JSON.stringify(cartState));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initProfileNavigation();
   initProfileForms();
   initAvatarUpload();
   renderCart();
+  loadCurrentProfile();
 });
+
+async function loadCurrentProfile() {
+  if (typeof appApi === "undefined") return;
+  try {
+    const user = await appApi.auth.me();
+    applyProfile(user);
+  } catch (error) {
+    try {
+      const saved = JSON.parse(localStorage.getItem("hesabyarGuestProfile") || "null");
+      if (saved) applyProfile(saved);
+    } catch (storageError) {
+      return;
+    }
+  }
+}
+
+function applyProfile(profile) {
+  if (profile.name) {
+    document.getElementById("profileFullName").textContent = profile.name;
+    document.getElementById("inputName").value = profile.name;
+  }
+  if (profile.email) {
+    document.getElementById("profileUserEmail").textContent = profile.email;
+    document.getElementById("inputEmail").value = profile.email;
+  }
+  if (profile.phone) document.getElementById("inputPhone").value = profile.phone;
+  if (profile.birth) document.getElementById("inputBirth").value = profile.birth;
+  if (profile.address) document.getElementById("inputAddress").value = profile.address;
+}
 
 // Tab Router
 function initProfileNavigation() {
@@ -118,12 +163,14 @@ function updateQty(id, delta) {
       cartState = cartState.filter((i) => i.id !== id);
     }
     renderCart();
+    persistCart();
   }
 }
 
 function removeItem(id) {
   cartState = cartState.filter((i) => i.id !== id);
   renderCart();
+  persistCart();
   showToast("محصول از سبد خرید حذف شد", "info");
 }
 
@@ -132,12 +179,11 @@ function checkoutCart() {
     showToast("سبد خرید شما خالی است", "info");
     return;
   }
-  showToast(
-    "سفارش شما با موفقیت ثبت شد و در حال انتقال به درگاه پرداخت است...",
-    "success",
+  sessionStorage.setItem(
+    "hesabyarCheckout",
+    JSON.stringify({ total: cartState.reduce((sum, item) => sum + item.price * item.qty, 0) }),
   );
-  cartState = [];
-  setTimeout(() => renderCart(), 1500);
+  window.location.href = "checkout.html";
 }
 
 // Form Handlers
@@ -149,19 +195,42 @@ function initProfileForms() {
       const name = document.getElementById("inputName").value;
       const email = document.getElementById("inputEmail").value;
 
-      document.getElementById("profileFullName").textContent = name;
-      document.getElementById("profileUserEmail").textContent = email;
-
+      const profile = {
+        name,
+        email,
+        phone: document.getElementById("inputPhone").value.trim(),
+        birth: document.getElementById("inputBirth").value.trim(),
+        address: document.getElementById("inputAddress").value.trim(),
+      };
+      try {
+        await appApi.profile.update(profile);
+      } catch (error) {
+        localStorage.setItem("hesabyarGuestProfile", JSON.stringify(profile));
+      }
+      applyProfile(profile);
       showToast("اطلاعات شخصی با موفقیت ذخیره شد", "success");
     });
   }
 
   const securityForm = document.getElementById("securityForm");
   if (securityForm) {
-    securityForm.addEventListener("submit", (e) => {
+    securityForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      securityForm.reset();
-      showToast("رمز عبور با موفقیت به‌روزرسانی شد", "success");
+      const fields = securityForm.querySelectorAll("input");
+      if (fields[1].value !== fields[2].value) {
+        showToast("رمز عبور جدید و تکرار آن یکسان نیستند", "error");
+        return;
+      }
+      try {
+        await appApi.profile.changePassword({
+          currentPassword: fields[0].value,
+          newPassword: fields[1].value,
+        });
+        securityForm.reset();
+        showToast("رمز عبور با موفقیت به‌روزرسانی شد", "success");
+      } catch (error) {
+        showToast(error.message, "error");
+      }
     });
   }
 }

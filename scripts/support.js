@@ -66,4 +66,49 @@ document.addEventListener("DOMContentLoaded", () => {
     nativeSelect.classList.add("native-select-hidden");
     nativeSelect.parentNode.insertBefore(wrapper, nativeSelect.nextSibling);
   }
+
+  const contactForm = document.getElementById("contactForm");
+  if (contactForm) {
+    const showMessage = (message, type) => {
+      let messageEl = contactForm.querySelector(".form-message");
+      if (!messageEl) {
+        messageEl = document.createElement("p");
+        messageEl.className = "form-message";
+        contactForm.prepend(messageEl);
+      }
+      messageEl.textContent = message;
+      messageEl.dataset.type = type || "info";
+    };
+
+    contactForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submit = contactForm.querySelector('[type="submit"]');
+      const originalText = submit?.innerHTML;
+      if (submit) {
+        submit.disabled = true;
+        submit.innerHTML = "در حال ارسال...";
+      }
+
+      try {
+        await appApi.support.sendMessage({
+          name: document.getElementById("name").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          subject: document.getElementById("subject").value,
+          message: document.getElementById("message").value.trim(),
+        });
+        contactForm.reset();
+        if (nativeSelect) {
+          nativeSelect.value = "";
+        }
+        showMessage("پیام شما با موفقیت ارسال شد.", "success");
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        if (submit) {
+          submit.disabled = false;
+          submit.innerHTML = originalText;
+        }
+      }
+    });
+  }
 });
