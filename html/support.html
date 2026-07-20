@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="../styles/header/top-header.css" />
     <link rel="stylesheet" href="../styles/header/bottom-header.css" />
     <link rel="stylesheet" href="../styles/header/mobile-header.css" />
-    <link rel="stylesheet" href="../styles/main/main.css" />\
-    <link rel="stylesheet" href="../styles/pages/support.css">
+    <link rel="stylesheet" href="../styles/main/main.css" />
+    <link rel="stylesheet" href="../styles/pages/support.css" />
     <link rel="stylesheet" href="../styles/footer/main-footer.css" />
     <link
       rel="stylesheet"
@@ -637,6 +637,17 @@
       </div>
     </main>
 
+    <!-- toggle btn -->
+    <button id="themeToggleBtn" class="theme-toggle" aria-label="تغییر تم">
+      <span class="theme-toggle-track-icons"
+        ><span>🌙</span><span>☀️</span></span
+      >
+      <span class="theme-toggle-knob">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </span>
+    </button>
+
     <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-container">
@@ -712,12 +723,16 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>
-            تمامی حقوق برای <a href="home.html">حسابیار</a> محفوظ است. | طراحی
-            شده با ❤️
-          </p>
+          <p>تمامی حقوق برای <a href="home.html">حسابیار</a> محفوظ است.</p>
         </div>
       </div>
     </footer>
+
+    <!-- SCRIPTS -->
+    <script src="../scripts/support.js"></script>
+    <script src="../scripts/mobile-menu.js"></script>
+    <script src="../scripts/ai-widget.js"></script>
+    <script src="../scripts/up-btn.js"></script>
+    <script src="../scripts/toggle-btn.js"></script>
   </body>
 </html>

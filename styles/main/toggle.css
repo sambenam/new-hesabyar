@@ -1,17 +1,14 @@
-/* THEME TOGGLE - شب = فعلی سایت (#0f172a) / روز = روشن ملایم */
+/* /* THEME TOGGLE - شب = فعلی سایت (#0f172a) */
 * {
     transition-property: background, background-color, border-color, color, box-shadow;
     transition-duration: .6s;
     transition-timing-function: cubic-bezier(.16, 1, .3, 1);
 }
 
-.theme-toggle-wrapper {
-    display: flex;
-    align-items: center
-}
 
 .theme-toggle {
-    position: relative;
+    position: fixed;
+    top: 75px;
     left: 7px;
     width: 64px;
     height: 34px;
@@ -24,6 +21,7 @@
     align-items: center;
     padding: 3px;
     outline: none;
+    z-index: 9999;
 }
 
 .theme-toggle:hover {
@@ -93,60 +91,7 @@ html[data-theme="light"] .main-container {
 }
 
 
-html[data-theme="light"] .path-item {
-    border-color: rgb(213 210 210) !important;
-}
 
-html[data-theme="light"] .path-connector {
-    opacity: unset;
-}
-
-html[data-theme="light"] .popular-courses_item,
-html[data-theme="light"] .new-courses_item {
-    border-color: #d3d7dd !important;
-}
-
-html[data-theme="light"] .popular-courses_item:hover,
-html[data-theme="light"] .new-courses_item:hover {
-    border-color: var(--accent-primary) !important;
-}
-
-html[data-theme="light"] .article-category {
-    color: #0f172a !important;
-}
-
-html[data-theme="light"] .article-meta {
-    border-top: 1px solid #d6cece !important;
-}
-
-html[data-theme="light"] .exam-news_title {
-    color: #293144 !important;
-}
-
-html[data-theme="light"] .footer-links a {
-    color: #7d8493 !important;
-}
-
-html[data-theme="light"] .footer-links a:hover {
-    color: var(--accent-primary) !important;
-}
-
-html[data-theme="light"] .footer-links a {
-    color: #2e2f31 !important;
-}
-
-html[data-theme="light"] .social-link:hover {
-    background: unset !important;
-    color: unset !important;
-}
-
-html[data-theme="light"] .scroll-top-btn {
-    background: rgb(21 62 155 / 95%) !important;
-}
-
-html[data-theme="light"] .scroll-top-btn:hover {
-    background: rgba(49, 90, 185, 0.95) !important;
-}
 
 html[data-theme="light"] .theme-toggle {
     background: rgba(15, 23, 42, .06) !important;
@@ -166,4 +111,11 @@ html[data-theme="light"] .theme-toggle-knob .icon-sun {
 html[data-theme="light"] .theme-toggle-knob .icon-moon {
     opacity: 0 !important;
     transform: rotate(90deg) scale(.5) !important;
+}
+
+@media (max-width:1000px) {
+    .theme-toggle {
+        position: absolute;
+        top: 80px;
+    }
 }

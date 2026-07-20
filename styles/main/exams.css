@@ -74,7 +74,7 @@
 }
 
 .exam-news_item:hover .exam-news_title {
-    color: var(--accent-primary);
+    color: #7380c6;
 }
 
 .exam-news_link {
@@ -125,6 +125,14 @@
 .exam-news_meta i {
     color: var(--accent-primary);
 }
+
+/* exams light mode */
+html[data-theme="light"] .exam-news_title {
+    color: #293144 !important;
+}
+
+/* exams light mode */
+
 
 @media(max-width:992px) {
     .exam-news_items {

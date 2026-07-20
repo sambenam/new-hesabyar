@@ -3,28 +3,25 @@
    ============================================ */
 
 @import url('../variables.css');
-@import url('../base.css');
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    color: #98b1c6;
+}
 
 /* ABOUT CONTENT */
 .about-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-2xl);
     margin-bottom: var(--spacing-2xl);
     align-items: center;
 }
 
-.about-image {
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-}
-
-.about-image img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-}
 
 .about-text h2 {
     font-size: var(--font-size-2xl);
@@ -164,52 +161,39 @@
     transform: translateY(-2px);
 }
 
-/* STATS SECTION */
-.about-stats {
-    margin-bottom: var(--spacing-xl);
+/* about-us light mode */
+html[data-theme="light"] .page-title {
+    color: rgba(45, 49, 56, 0.95) !important;
 }
 
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-    margin-top: var(--spacing-xl);
+html[data-theme="light"] .about-feature {
+    border-color: rgb(190, 177, 177) !important;
 }
 
-.stat-card {
-    text-align: center;
-    padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    transition: all var(--transition-normal);
+html[data-theme="light"] .about-feature:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: var(--shadow-md) !important;
+    border-color: var(--accent-primary) !important;
 }
 
-.stat-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent-primary);
+html[data-theme="light"] .team-member {
+    border-color: rgb(171, 210, 233) !important;
 }
 
-.stat-card i {
-    font-size: var(--font-size-2xl);
-    color: var(--accent-primary);
-    margin-bottom: var(--spacing-md);
+html[data-theme="light"] .team-member:hover {
+    border-color: var(--accent-primary) !important;
 }
 
-.stat-card .stat-number {
-    display: block;
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
+html[data-theme="light"] .team-socials a {
+    border-color: rgb(173, 182, 188) !important;
 }
 
-.stat-card .stat-label {
-    font-size: var(--font-size-sm);
-    color: var(--text-muted);
+html[data-theme="light"] .team-socials a:hover {
+    background: rgb(149, 82, 82) !important;
 }
+
+/* about-us light mode */
 
 /* Responsive */
 @media (max-width: 992px) {

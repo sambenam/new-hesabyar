@@ -3,7 +3,6 @@
    ============================================ */
 
 @import url('../variables.css');
-@import url('../base.css');
 
 .signup-container {
     max-width: 500px;
@@ -71,6 +70,15 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+}
+
+#loginEmail,
+#loginPassword,
+#registerName,
+#registerEmail,
+#registerPassword,
+#registerConfirmPassword {
+    width: 95%;
 }
 
 .form-group {
@@ -286,6 +294,21 @@
     border-color: #0088cc;
     color: white;
 }
+
+/* login-signup light mode */
+html[data-theme="light"] .signup-container {
+    background: rgb(210 216 231 / 95%) !important;
+}
+
+html[data-theme="light"] .checkmark {
+    border: 1px solid rgb(151, 147, 147) !important;
+}
+
+html[data-theme="light"] .checkbox-label a {
+    color: rgba(85, 109, 157, 0.95) !important;
+}
+
+/* login-signup light mode */
 
 /* Responsive */
 @media (max-width: 768px) {

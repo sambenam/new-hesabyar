@@ -308,11 +308,6 @@ const headerItems = {
       },
     },
   },
-
-  products: {
-    title: "محصولات و دوره ها",
-    categories: {},
-  },
 };
 
 function flattenHeaderItems(items) {

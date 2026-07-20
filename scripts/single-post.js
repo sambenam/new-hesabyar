@@ -27,7 +27,7 @@ function loadSinglePost() {
       postImage.src = post.image;
       postImage.alt = post.title;
       // the bottom line => if you want change the content with backtick use -- postContent.innerHtml = post.content -- instead of -- postContent.textContent = post.content --
-      postContent.textContent = post.content;
+      postContent.innerHTML = post.content;
       //
       backLink.textContent = "بازگشت به " + category.title;
       backLink.href = "list-page.html?cat=" + slug;
