@@ -16,12 +16,14 @@
     mobileMenu?.classList.remove("active");
     mobileOverlay?.classList.remove("active");
     document.body.style.overflow = "";
+    document.body.classList.remove("mobile-menu-open");
   }
 
   mobileMenuBtn?.addEventListener("click", () => {
     mobileMenu?.classList.add("active");
     mobileOverlay?.classList.add("active");
     document.body.style.overflow = "hidden";
+    document.body.classList.add("mobile-menu-open");
   });
 
   mobileCloseBtn?.addEventListener("click", closeMobileMenu);
