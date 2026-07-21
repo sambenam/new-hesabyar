@@ -6,6 +6,70 @@ let contentEditorState = {
 
 let contentAdminInitialized = false;
 
+function populateCategorySelect() {
+  const select = document.getElementById("newItemCategory");
+  if (!select) return;
+
+  if (typeof siteData === "undefined") {
+    select.innerHTML = '<option value="">اطلاعات لود نشده است</option>';
+    return;
+  }
+
+  const groups = [
+    {
+      title: "🎓 منوهای هدر: بخش دانشجویان و کنکور",
+      categories: ["diploma", "associate_degree", "bachelor", "master", "phd", "konkur1", "konkur2", "konkur3", "Enterpreneurship_projects", "Enternship-projects", "Financial-project"]
+    },
+    {
+      title: "📂 منوهای هدر: فایل‌های دانلود حسابداری",
+      categories: ["power_point", "Exel", "Word"]
+    },
+    {
+      title: "📝 منوهای هدر: مقالات، ویدیوها و بخشنامه‌ها",
+      categories: ["accounting_article", "software_training", "standards", "accounting_circulars", "videos"]
+    },
+    {
+      title: "🏠 سکشن‌های صفحه اصلی",
+      categories: ["beginner", "intermediate", "advanced", "popularCourses", "newCourses", "specials", "articles", "exams"]
+    }
+  ];
+
+  let htmlOptions = "";
+  groups.forEach(group => {
+    htmlOptions += `<optgroup label="${group.title}">`;
+    group.categories.forEach(catKey => {
+      const category = siteData[catKey];
+      if (category) {
+        htmlOptions += `<option value="${catKey}">${category.title} (${catKey})</option>`;
+      }
+    });
+    htmlOptions += `</optgroup>`;
+  });
+
+  select.innerHTML = htmlOptions;
+}
+
+function deleteContentItem(itemId) {
+  if (confirm("آیا از حذف این آیتم اطمینان دارید؟ این عمل قابل بازگشت نیست.")) {
+    if (typeof addDeletedItemId === "function") {
+      addDeletedItemId(itemId);
+    }
+    if (typeof removeContentOverride === "function") {
+      removeContentOverride(itemId);
+    }
+    if (typeof removeAddedItem === "function") {
+      removeAddedItem(itemId);
+    }
+
+    if (typeof applyContentOverrides === "function" && typeof siteData !== "undefined") {
+      applyContentOverrides(siteData);
+    }
+
+    showToast("آیتم با موفقیت حذف شد.", "success");
+    renderContentTable();
+  }
+}
+
 function initContentAdmin() {
   if (contentAdminInitialized) {
     return;
@@ -14,10 +78,12 @@ function initContentAdmin() {
   contentAdminInitialized = true;
   const searchInput = document.getElementById("contentTableSearch");
   const form = document.getElementById("editContentForm");
+  const addNewBtn = document.getElementById("addNewContentItemBtn");
+  const addNewForm = document.getElementById("addNewItemForm");
 
   if (searchInput) {
     searchInput.addEventListener("input", function (event) {
-      filterContentTable(event.target.value);
+      renderContentTable();
     });
   }
 
@@ -25,6 +91,62 @@ function initContentAdmin() {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       saveEditedContent();
+    });
+  }
+
+  if (addNewBtn) {
+    addNewBtn.addEventListener("click", function() {
+      populateCategorySelect();
+      openModal("addNewItemModal");
+    });
+  }
+
+  if (addNewForm) {
+    addNewForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const id = document.getElementById("newItemId").value.trim();
+      const catKey = document.getElementById("newItemCategory").value;
+      const title = document.getElementById("newItemTitle").value.trim();
+      const image = document.getElementById("newItemImage").value.trim() || "../images/ravin.png";
+      const excerpt = document.getElementById("newItemExcerpt").value.trim();
+
+      if (!id || !catKey || !title) {
+        showToast("لطفاً فیلدهای ضروری را پر کنید.", "error");
+        return;
+      }
+
+      // Check for duplicates
+      if (typeof findSiteItem === "function" && findSiteItem(id)) {
+        showToast("خطا: آیتمی با این شناسه (ID) از قبل وجود دارد.", "error");
+        return;
+      }
+
+      const newItem = {
+        id: id,
+        title: title,
+        categoryKey: catKey,
+        image: image,
+        excerpt: excerpt,
+        content: {
+          blocks: [],
+          video: null,
+          downloads: []
+        }
+      };
+
+      if (typeof saveAddedItem === "function") {
+        saveAddedItem(newItem);
+      }
+
+      if (typeof applyContentOverrides === "function" && typeof siteData !== "undefined") {
+        applyContentOverrides(siteData);
+      }
+
+      closeModal("addNewItemModal");
+      showToast("آیتم جدید با موفقیت اضافه شد.", "success");
+      addNewForm.reset();
+      renderContentTable();
     });
   }
 
@@ -53,72 +175,241 @@ function initContentAdmin() {
 }
 
 function renderContentTable() {
-  const tbody = document.getElementById("siteContentTableBody");
-  if (!tbody) {
+  const container = document.getElementById("groupedContentContainer");
+  if (!container) {
     return;
   }
 
-  if (typeof getAllSiteItems !== "function") {
-    tbody.innerHTML =
-      '<tr><td colspan="5">اطلاعات محتوا بارگذاری نشده است. صفحه را دوباره بارگذاری کنید.</td></tr>';
+  if (typeof getAllSiteItems !== "function" || typeof siteData === "undefined") {
+    container.innerHTML =
+      '<div class="alert alert-error">اطلاعات محتوا بارگذاری نشده است. صفحه را دوباره بارگذاری کنید.</div>';
     return;
   }
 
-  const items = getAllSiteItems();
+  const searchQuery = document.getElementById("contentTableSearch") ? document.getElementById("contentTableSearch").value.trim().toLowerCase() : "";
 
-  if (!items.length) {
-    tbody.innerHTML =
-      '<tr><td colspan="5">هنوز آیتمی برای ویرایش پیدا نشد.</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = items
-    .map(function (row) {
-      const statusBadge = row.hasOverride
-        ? '<span class="status success">ذخیره ادمین</span>'
-        : row.hasBlocks
-          ? '<span class="status pending">بلوک‌بندی</span>'
-          : '<span class="status cancelled">پیش‌فرض</span>';
-
+  // 1. Search Mode
+  if (searchQuery) {
+    const items = getAllSiteItems().filter(function(row) {
       return (
-        "<tr>" +
-        "<td><code>" +
-        row.id +
-        "</code></td>" +
-        "<td>" +
-        row.title +
-        "</td>" +
-        "<td>" +
-        row.categoryTitle +
-        "</td>" +
-        "<td>" +
-        statusBadge +
-        "</td>" +
-        "<td>" +
-        '<button type="button" class="btn-secondary content-edit-btn" data-item-id="' +
-        row.id +
-        '">ویرایش محتوا</button>' +
-        "</td>" +
-        "</tr>"
+        String(row.id).toLowerCase().includes(searchQuery) ||
+        String(row.title).toLowerCase().includes(searchQuery) ||
+        String(row.categoryTitle).toLowerCase().includes(searchQuery)
       );
-    })
-    .join("");
+    });
 
-  tbody.querySelectorAll(".content-edit-btn").forEach(function (button) {
-    button.addEventListener("click", function () {
+    if (!items.length) {
+      container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">نتیجه‌ای برای جستجوی شما پیدا نشد.</div>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="glass-card" style="margin-top: 1rem;">
+        <div class="card-header"><h3>نتایج جستجو (${items.length} آیتم)</h3></div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>شناسه</th>
+                <th>عنوان</th>
+                <th>دسته</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${items.map(function(row) {
+                const statusBadge = row.hasOverride
+                  ? '<span class="status success">ذخیره ادمین</span>'
+                  : row.hasBlocks
+                    ? '<span class="status pending">بلوک‌بندی</span>'
+                    : '<span class="status cancelled">پیش‌فرض</span>';
+                return `
+                  <tr>
+                    <td><code>${row.id}</code></td>
+                    <td>${row.title}</td>
+                    <td>${row.categoryTitle}</td>
+                    <td>${statusBadge}</td>
+                    <td style="display: flex; gap: 0.5rem; align-items: center;">
+                      <button type="button" class="btn-secondary content-edit-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
+                      <button type="button" class="btn-secondary content-delete-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    container.querySelectorAll(".content-edit-btn").forEach(function(button) {
+      button.addEventListener("click", function() {
+        openContentEditor(button.getAttribute("data-item-id"));
+      });
+    });
+    container.querySelectorAll(".content-delete-btn").forEach(function(button) {
+      button.addEventListener("click", function() {
+        deleteContentItem(button.getAttribute("data-item-id"));
+      });
+    });
+    return;
+  }
+
+  // 2. Normal Grouped Accordion Mode
+  const groups = [
+    {
+      id: "group-students",
+      title: "🎓 منوهای هدر: بخش دانشجویان و کنکور",
+      categories: ["diploma", "associate_degree", "bachelor", "master", "phd", "konkur1", "konkur2", "konkur3", "Enterpreneurship_projects", "Enternship-projects", "Financial-project"]
+    },
+    {
+      id: "group-files",
+      title: "📂 منوهای هدر: فایل‌های دانلود حسابداری",
+      categories: ["power_point", "Exel", "Word"]
+    },
+    {
+      id: "group-others",
+      title: "📝 منوهای هدر: مقالات، ویدیوها و بخشنامه‌ها",
+      categories: ["accounting_article", "software_training", "standards", "accounting_circulars", "videos"]
+    },
+    {
+      id: "group-main",
+      title: "🏠 سکشن‌های صفحه اصلی",
+      categories: ["beginner", "intermediate", "advanced", "popularCourses", "newCourses", "specials", "articles", "exams"]
+    }
+  ];
+
+  const allCategoriesInGroups = [];
+  groups.forEach(function(g) {
+    allCategoriesInGroups.push.apply(allCategoriesInGroups, g.categories);
+  });
+  
+  const fallbackCategories = [];
+  Object.keys(siteData).forEach(function(catKey) {
+    if (allCategoriesInGroups.indexOf(catKey) === -1) {
+      fallbackCategories.push(catKey);
+    }
+  });
+  
+  if (fallbackCategories.length > 0) {
+    groups.push({
+      id: "group-fallback",
+      title: "⚙️ سایر دسته‌بندی‌های سایت",
+      categories: fallbackCategories
+    });
+  }
+
+  let htmlContent = "";
+
+  groups.forEach(function(group, groupIdx) {
+    let groupCategoriesHtml = "";
+
+    group.categories.forEach(function(catKey) {
+      const category = siteData[catKey];
+      if (!category) return;
+
+      const categoryItems = category.items || [];
+      
+      let itemsHtml = "";
+      if (categoryItems.length === 0) {
+        itemsHtml = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 1rem;">هیچ آیتمی در این دسته وجود ندارد.</td></tr>`;
+      } else {
+        itemsHtml = categoryItems.map(function(item) {
+          const hasOverride = Boolean(getContentOverride(item.id));
+          const hasBlocks = typeof getContentBlocks === "function" ? getContentBlocks(item).length > 0 : Boolean(item.content);
+          const statusBadge = hasOverride
+            ? '<span class="status success">ذخیره ادمین</span>'
+            : hasBlocks
+              ? '<span class="status pending">بلوک‌بندی</span>'
+              : '<span class="status cancelled">پیش‌فرض</span>';
+
+          return `
+            <tr>
+              <td><code>${item.id}</code></td>
+              <td><img src="${item.image || '../images/ravin.png'}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);" /></td>
+              <td style="font-weight: 500;">${item.title}</td>
+              <td>${statusBadge}</td>
+              <td style="display: flex; gap: 0.5rem; align-items: center;">
+                <button type="button" class="btn-secondary content-edit-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
+                <button type="button" class="btn-secondary content-delete-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      groupCategoriesHtml += `
+        <div class="admin-category-box" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.01); padding: 1.25rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04);">
+          <h4 style="margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; font-size: 15px;">
+            <i class="fa-solid fa-folder-open" style="color: #3b82f6;"></i>
+            ${category.title}
+            <span style="font-size: 11px; font-weight: normal; color: var(--text-muted); direction: ltr;">(${catKey})</span>
+          </h4>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 15%;">شناسه</th>
+                  <th style="width: 10%;">تصویر</th>
+                  <th style="width: 50%;">عنوان آیتم</th>
+                  <th style="width: 13%;">وضعیت</th>
+                  <th style="width: 12%;">عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    });
+
+    const isOpen = groupIdx === 0 ? "open" : "";
+
+    htmlContent += `
+      <details class="admin-group-details" ${isOpen} style="margin-bottom: 1rem; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); overflow: hidden;">
+        <summary style="padding: 1.25rem; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); user-select: none; outline: none; list-style: none;">
+          <span>${group.title}</span>
+          <i class="fa-solid fa-chevron-down" style="font-size: 12px; transition: transform 0.3s;"></i>
+        </summary>
+        <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.04);">
+          ${groupCategoriesHtml}
+        </div>
+      </details>
+    `;
+  });
+
+  container.innerHTML = htmlContent;
+
+  container.querySelectorAll("details").forEach(function(det) {
+    const summary = det.querySelector("summary");
+    const icon = summary.querySelector("i");
+    if (det.open) {
+      icon.style.transform = "rotate(180deg)";
+    }
+    summary.addEventListener("click", function() {
+      setTimeout(function() {
+        icon.style.transform = det.open ? "rotate(180deg)" : "rotate(0deg)";
+      }, 50);
+    });
+  });
+
+  container.querySelectorAll(".content-edit-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
       openContentEditor(button.getAttribute("data-item-id"));
+    });
+  });
+  container.querySelectorAll(".content-delete-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+      deleteContentItem(button.getAttribute("data-item-id"));
     });
   });
 }
 
 function filterContentTable(query) {
-  const normalized = query.trim().toLowerCase();
-
-  document.querySelectorAll("#siteContentTableBody tr").forEach(function (row) {
-    row.style.display = row.textContent.toLowerCase().includes(normalized)
-      ? ""
-      : "none";
-  });
+  renderContentTable();
 }
 
 function openContentEditor(itemId) {
@@ -134,7 +425,17 @@ function openContentEditor(itemId) {
   contentEditorState.downloads = getEditableDownloads(item);
 
   document.getElementById("editContentItemId").value = itemId;
-  document.getElementById("editContentTitle").textContent = item.title;
+  
+  const titleInput = document.getElementById("editContentTitleInput");
+  if (titleInput) {
+    titleInput.value = item.title || "";
+  }
+
+  const imageInput = document.getElementById("editContentImageInput");
+  if (imageInput) {
+    imageInput.value = item.image || "";
+  }
+
   document.getElementById("editContentCategory").textContent =
     found.categoryTitle;
   document.getElementById("editContentExcerpt").value = item.excerpt || "";
@@ -651,10 +952,29 @@ function saveEditedContent() {
     content.downloads = downloads;
   }
 
+  const title = document.getElementById("editContentTitleInput") ? document.getElementById("editContentTitleInput").value.trim() : "";
+  const image = document.getElementById("editContentImageInput") ? document.getElementById("editContentImageInput").value.trim() : "";
+
   saveContentOverride(contentEditorState.itemId, {
     content: content,
     excerpt: excerpt,
+    title: title || undefined,
+    image: image || undefined
   });
+
+  // If this item was a custom added item, make sure we update its base details inside addedItems
+  if (typeof loadAddedItems === "function") {
+    const addedItems = loadAddedItems();
+    const idx = addedItems.findIndex(function(i) { return i.id === contentEditorState.itemId; });
+    if (idx > -1) {
+      addedItems[idx].title = title || addedItems[idx].title;
+      addedItems[idx].image = image || addedItems[idx].image;
+      addedItems[idx].excerpt = excerpt;
+      addedItems[idx].content = content;
+      localStorage.setItem("irHesabdarAddedItems", JSON.stringify(addedItems));
+    }
+  }
+
   if (typeof appApi !== "undefined" && appApi.content) {
     appApi.content
       .update(contentEditorState.itemId, { content: content, excerpt: excerpt })
@@ -667,11 +987,21 @@ function saveEditedContent() {
   if (found) {
     found.item.content = content;
     found.item.excerpt = excerpt;
+    if (title) {
+      found.item.title = title;
+    }
+    if (image) {
+      found.item.image = image;
+    }
+  }
+
+  if (typeof applyContentOverrides === "function" && typeof siteData !== "undefined") {
+    applyContentOverrides(siteData);
   }
 
   closeModal("editContentModal");
   renderContentTable();
-  showToast("محتوای «" + contentEditorState.itemId + "» ذخیره شد", "success");
+  showToast("محتوای «" + contentEditorState.itemId + "» با موفقیت ذخیره شد", "success");
 }
 
 function resetEditedContent() {
