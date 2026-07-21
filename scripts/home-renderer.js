@@ -4,12 +4,49 @@
     return;
   }
 
-  // 1. POPULAR COURSES
+  // Load added items to identify custom items
+  const addedItemsRaw = localStorage.getItem("irHesabdarAddedItems");
+  const addedIds = [];
+  if (addedItemsRaw) {
+    try {
+      const parsed = JSON.parse(addedItemsRaw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(function (item) {
+          if (item && item.id) {
+            addedIds.push(item.id);
+          }
+        });
+      }
+    } catch (e) {
+      console.warn("home-renderer: خطا در خواندن added items", e);
+    }
+  }
+
+  // Helper to get items to display (First N default items + all custom items)
+  function getItemsToDisplay(categoryKey, defaultCount) {
+    const category = siteData[categoryKey];
+    if (!category || !Array.isArray(category.items)) {
+      return [];
+    }
+    
+    const items = category.items;
+    const defaultItems = items.filter(function (item) {
+      return addedIds.indexOf(item.id) === -1;
+    });
+    const customItems = items.filter(function (item) {
+      return addedIds.indexOf(item.id) !== -1;
+    });
+
+    // Combine first N defaults with all custom/added ones
+    return defaultItems.slice(0, defaultCount).concat(customItems);
+  }
+
+  // 1. POPULAR COURSES (Show first 4 defaults + all custom items)
   const popularContainer = document.querySelector(".popular-courses_items");
-  if (popularContainer && siteData.popularCourses && Array.isArray(siteData.popularCourses.items)) {
-    const popularItems = siteData.popularCourses.items;
-    if (popularItems.length > 0) {
-      popularContainer.innerHTML = popularItems.map(item => `
+  if (popularContainer) {
+    const itemsToShow = getItemsToDisplay("popularCourses", 4);
+    if (itemsToShow.length > 0) {
+      popularContainer.innerHTML = itemsToShow.map(item => `
         <li class="popular-courses_item">
           <div class="popular-courses_banner">
             <img src="${item.image || '../images/ravin.png'}" class="popular-courses_img" alt="${item.title}" />
@@ -29,12 +66,12 @@
     }
   }
 
-  // 2. NEW COURSES
+  // 2. NEW COURSES (Show first 4 defaults + all custom items)
   const newCoursesContainer = document.querySelector(".new-courses_items");
-  if (newCoursesContainer && siteData.newCourses && Array.isArray(siteData.newCourses.items)) {
-    const newItems = siteData.newCourses.items;
-    if (newItems.length > 0) {
-      newCoursesContainer.innerHTML = newItems.map(item => `
+  if (newCoursesContainer) {
+    const itemsToShow = getItemsToDisplay("newCourses", 4);
+    if (itemsToShow.length > 0) {
+      newCoursesContainer.innerHTML = itemsToShow.map(item => `
         <li class="new-courses_item">
           <div class="new-courses_banner">
             <img src="${item.image || '../images/ravin.png'}" class="new-courses_img" alt="${item.title}" />
@@ -54,13 +91,13 @@
     }
   }
 
-  // 3. FEATURED CONTENT (specials) - Keep grid structure, but render up to 5 items if available
+  // 3. FEATURED CONTENT (specials) - Show first 3 defaults + all custom items
   const featuredGrid = document.querySelector(".featured-grid");
-  if (featuredGrid && siteData.specials && Array.isArray(siteData.specials.items)) {
-    const items = siteData.specials.items;
-    if (items.length > 0) {
-      const mainItem = items[0];
-      const smallItems = items.slice(1);
+  if (featuredGrid) {
+    const itemsToShow = getItemsToDisplay("specials", 3);
+    if (itemsToShow.length > 0) {
+      const mainItem = itemsToShow[0];
+      const smallItems = itemsToShow.slice(1);
       
       let smallHtml = '';
       if (smallItems.length > 0) {
@@ -101,12 +138,12 @@
     }
   }
 
-  // 4. LATEST ARTICLES
+  // 4. LATEST ARTICLES (Show first 4 defaults + all custom items)
   const articleContainer = document.querySelector(".article-items");
-  if (articleContainer && siteData.articles && Array.isArray(siteData.articles.items)) {
-    const articleItems = siteData.articles.items;
-    if (articleItems.length > 0) {
-      articleContainer.innerHTML = articleItems.map(item => `
+  if (articleContainer) {
+    const itemsToShow = getItemsToDisplay("articles", 4);
+    if (itemsToShow.length > 0) {
+      articleContainer.innerHTML = itemsToShow.map(item => `
         <li class="article-item">
           <div class="article-image">
             <img src="${item.image || '../images/ravin.png'}" alt="${item.title}" />
@@ -142,12 +179,12 @@
     }
   }
 
-  // 5. EXAMS
+  // 5. EXAMS (Show first 4 defaults + all custom items)
   const examsContainer = document.querySelector(".exam-news_items");
-  if (examsContainer && siteData.exams && Array.isArray(siteData.exams.items)) {
-    const examItems = siteData.exams.items;
-    if (examItems.length > 0) {
-      examsContainer.innerHTML = examItems.map(item => `
+  if (examsContainer) {
+    const itemsToShow = getItemsToDisplay("exams", 4);
+    if (itemsToShow.length > 0) {
+      examsContainer.innerHTML = itemsToShow.map(item => `
         <li class="exam-news_item">
           <div class="exam-news_content">
             <h3 class="exam-news_title">${item.title}</h3>
