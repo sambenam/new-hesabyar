@@ -198,68 +198,228 @@ function renderContentTable() {
     return;
   }
 
-  if (typeof getAllSiteItems !== "function" || typeof siteData === "undefined") {
-    container.innerHTML =
-      '<div class="alert alert-error">اطلاعات محتوا بارگذاری نشده است. صفحه را دوباره بارگذاری کنید.</div>';
-    return;
-  }
-
-  const searchQuery = document.getElementById("contentTableSearch") ? document.getElementById("contentTableSearch").value.trim().toLowerCase() : "";
-
-  // 1. Search Mode
-  if (searchQuery) {
-    const items = getAllSiteItems().filter(function(row) {
-      return (
-        String(row.id).toLowerCase().includes(searchQuery) ||
-        String(row.title).toLowerCase().includes(searchQuery) ||
-        String(row.categoryTitle).toLowerCase().includes(searchQuery)
-      );
-    });
-
-    if (!items.length) {
-      container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">نتیجه‌ای برای جستجوی شما پیدا نشد.</div>';
+  try {
+    if (typeof getAllSiteItems !== "function" || typeof siteData === "undefined") {
+      container.innerHTML =
+        '<div class="alert alert-error">اطلاعات محتوا بارگذاری نشده است. صفحه را دوباره بارگذاری کنید.</div>';
       return;
     }
 
-    container.innerHTML = `
-      <div class="glass-card" style="margin-top: 1rem;">
-        <div class="card-header"><h3>نتایج جستجو (${items.length} آیتم)</h3></div>
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>شناسه</th>
-                <th>عنوان</th>
-                <th>دسته</th>
-                <th>وضعیت</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${items.map(function(row) {
-                const statusBadge = row.hasOverride
-                  ? '<span class="status success">ذخیره ادمین</span>'
-                  : row.hasBlocks
-                    ? '<span class="status pending">بلوک‌بندی</span>'
-                    : '<span class="status cancelled">پیش‌فرض</span>';
-                return `
-                  <tr>
-                    <td><code>${row.id}</code></td>
-                    <td>${row.title}</td>
-                    <td>${row.categoryTitle}</td>
-                    <td>${statusBadge}</td>
-                    <td style="display: flex; gap: 0.5rem; align-items: center;">
-                      <button type="button" class="btn-secondary content-edit-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
-                      <button type="button" class="btn-secondary content-delete-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
-                    </td>
-                  </tr>
-                `;
-              }).join("")}
-            </tbody>
-          </table>
+    const searchQuery = document.getElementById("contentTableSearch") ? document.getElementById("contentTableSearch").value.trim().toLowerCase() : "";
+
+    // 1. Search Mode
+    if (searchQuery) {
+      const items = getAllSiteItems().filter(function(row) {
+        return (
+          String(row.id).toLowerCase().includes(searchQuery) ||
+          String(row.title).toLowerCase().includes(searchQuery) ||
+          String(row.categoryTitle).toLowerCase().includes(searchQuery)
+        );
+      });
+
+      if (!items.length) {
+        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">نتیجه‌ای برای جستجوی شما پیدا نشد.</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="glass-card" style="margin-top: 1rem;">
+          <div class="card-header"><h3>نتایج جستجو (${items.length} آیتم)</h3></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>شناسه</th>
+                  <th>عنوان</th>
+                  <th>دسته</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${items.map(function(row) {
+                  const statusBadge = row.hasOverride
+                    ? '<span class="status success">ذخیره ادمین</span>'
+                    : row.hasBlocks
+                      ? '<span class="status pending">بلوک‌بندی</span>'
+                      : '<span class="status cancelled">پیش‌فرض</span>';
+                  return `
+                    <tr>
+                      <td><code>${row.id}</code></td>
+                      <td>${row.title}</td>
+                      <td>${row.categoryTitle}</td>
+                      <td>${statusBadge}</td>
+                      <td style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button type="button" class="btn-secondary content-edit-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
+                        <button type="button" class="btn-secondary content-delete-btn" data-item-id="${row.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
+                      </td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+
+      container.querySelectorAll(".content-edit-btn").forEach(function(button) {
+        button.addEventListener("click", function() {
+          openContentEditor(button.getAttribute("data-item-id"));
+        });
+      });
+      container.querySelectorAll(".content-delete-btn").forEach(function(button) {
+        button.addEventListener("click", function() {
+          deleteContentItem(button.getAttribute("data-item-id"));
+        });
+      });
+      return;
+    }
+
+    // 2. Normal Grouped Accordion Mode
+    const groups = [
+      {
+        id: "group-students",
+        title: "🎓 منوهای هدر: بخش دانشجویان و کنکور",
+        categories: ["diploma", "associate_degree", "bachelor", "master", "phd", "konkur1", "konkur2", "konkur3", "Enterpreneurship_projects", "Enternship-projects", "Financial-project"]
+      },
+      {
+        id: "group-files",
+        title: "📂 منوهای هدر: فایل‌های دانلود حسابداری",
+        categories: ["power_point", "Exel", "Word"]
+      },
+      {
+        id: "group-others",
+        title: "📝 منوهای هدر: مقالات، ویدیوها و بخشنامه‌ها",
+        categories: ["accounting_article", "software_training", "standards", "accounting_circulars", "videos"]
+      },
+      {
+        id: "group-main",
+        title: "🏠 سکشن‌های صفحه اصلی",
+        categories: ["beginner", "intermediate", "advanced", "popularCourses", "newCourses", "specials", "articles", "exams"]
+      }
+    ];
+
+    const allCategoriesInGroups = [];
+    groups.forEach(function(g) {
+      if (Array.isArray(g.categories)) {
+        g.categories.forEach(function(c) {
+          allCategoriesInGroups.push(c);
+        });
+      }
+    });
+    
+    const fallbackCategories = [];
+    Object.keys(siteData).forEach(function(catKey) {
+      if (allCategoriesInGroups.indexOf(catKey) === -1) {
+        fallbackCategories.push(catKey);
+      }
+    });
+    
+    if (fallbackCategories.length > 0) {
+      groups.push({
+        id: "group-fallback",
+        title: "⚙️ سایر دسته‌بندی‌های سایت",
+        categories: fallbackCategories
+      });
+    }
+
+    let htmlContent = "";
+
+    groups.forEach(function(group, groupIdx) {
+      let groupCategoriesHtml = "";
+
+      group.categories.forEach(function(catKey) {
+        const category = siteData[catKey];
+        if (!category) return;
+
+        const categoryItems = category.items || [];
+        
+        let itemsHtml = "";
+        if (categoryItems.length === 0) {
+          itemsHtml = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 1rem;">هیچ آیتمی در این دسته وجود ندارد.</td></tr>`;
+        } else {
+          itemsHtml = categoryItems.map(function(item) {
+            const hasOverride = Boolean(getContentOverride(item.id));
+            const hasBlocks = typeof getContentBlocks === "function" ? getContentBlocks(item).length > 0 : Boolean(item.content);
+            const statusBadge = hasOverride
+              ? '<span class="status success">ذخیره ادمین</span>'
+              : hasBlocks
+                ? '<span class="status pending">بلوک‌بندی</span>'
+                : '<span class="status cancelled">پیش‌فرض</span>';
+
+            return `
+              <tr>
+                <td><code>${item.id}</code></td>
+                <td><img src="${item.image || '../images/ravin.png'}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);" /></td>
+                <td style="font-weight: 500;">${item.title}</td>
+                <td>${statusBadge}</td>
+                <td style="display: flex; gap: 0.5rem; align-items: center;">
+                  <button type="button" class="btn-secondary content-edit-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
+                  <button type="button" class="btn-secondary content-delete-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
+                </td>
+              </tr>
+            `;
+          }).join("");
+        }
+
+        groupCategoriesHtml += `
+          <div class="admin-category-box" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.01); padding: 1.25rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04);">
+            <h4 style="margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; font-size: 15px;">
+              <i class="fa-solid fa-folder-open" style="color: #3b82f6;"></i>
+              ${category.title}
+              <span style="font-size: 11px; font-weight: normal; color: var(--text-muted); direction: ltr;">(${catKey})</span>
+            </h4>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 15%;">شناسه</th>
+                    <th style="width: 10%;">تصویر</th>
+                    <th style="width: 50%;">عنوان آیتم</th>
+                    <th style="width: 13%;">وضعیت</th>
+                    <th style="width: 12%;">عملیات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      });
+
+      const isOpen = "open";
+
+      htmlContent += `
+        <details class="admin-group-details" ${isOpen} style="margin-bottom: 1rem; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); overflow: hidden;">
+          <summary style="padding: 1.25rem; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); user-select: none; outline: none; list-style: none;">
+            <span>${group.title}</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 12px; transition: transform 0.3s;"></i>
+          </summary>
+          <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.04);">
+            ${groupCategoriesHtml}
+          </div>
+        </details>
+      `;
+    });
+
+    container.innerHTML = htmlContent;
+
+    container.querySelectorAll("details").forEach(function(det) {
+      const summary = det.querySelector("summary");
+      const icon = summary.querySelector("i");
+      if (det.open && icon) {
+        icon.style.transform = "rotate(180deg)";
+      }
+      if (summary && icon) {
+        summary.addEventListener("click", function() {
+          setTimeout(function() {
+            icon.style.transform = det.open ? "rotate(180deg)" : "rotate(0deg)";
+          }, 50);
+        });
+      }
+    });
 
     container.querySelectorAll(".content-edit-btn").forEach(function(button) {
       button.addEventListener("click", function() {
@@ -271,159 +431,10 @@ function renderContentTable() {
         deleteContentItem(button.getAttribute("data-item-id"));
       });
     });
-    return;
+  } catch (err) {
+    console.error("Error inside renderContentTable:", err);
+    container.innerHTML = `<div class="alert alert-error" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 1rem; border-radius: 8px;">خطا در لود دسته‌بندی‌ها: ${err.message}</div>`;
   }
-
-  // 2. Normal Grouped Accordion Mode
-  const groups = [
-    {
-      id: "group-students",
-      title: "🎓 منوهای هدر: بخش دانشجویان و کنکور",
-      categories: ["diploma", "associate_degree", "bachelor", "master", "phd", "konkur1", "konkur2", "konkur3", "Enterpreneurship_projects", "Enternship-projects", "Financial-project"]
-    },
-    {
-      id: "group-files",
-      title: "📂 منوهای هدر: فایل‌های دانلود حسابداری",
-      categories: ["power_point", "Exel", "Word"]
-    },
-    {
-      id: "group-others",
-      title: "📝 منوهای هدر: مقالات، ویدیوها و بخشنامه‌ها",
-      categories: ["accounting_article", "software_training", "standards", "accounting_circulars", "videos"]
-    },
-    {
-      id: "group-main",
-      title: "🏠 سکشن‌های صفحه اصلی",
-      categories: ["beginner", "intermediate", "advanced", "popularCourses", "newCourses", "specials", "articles", "exams"]
-    }
-  ];
-
-  const allCategoriesInGroups = [];
-  groups.forEach(function(g) {
-    allCategoriesInGroups.push.apply(allCategoriesInGroups, g.categories);
-  });
-  
-  const fallbackCategories = [];
-  Object.keys(siteData).forEach(function(catKey) {
-    if (allCategoriesInGroups.indexOf(catKey) === -1) {
-      fallbackCategories.push(catKey);
-    }
-  });
-  
-  if (fallbackCategories.length > 0) {
-    groups.push({
-      id: "group-fallback",
-      title: "⚙️ سایر دسته‌بندی‌های سایت",
-      categories: fallbackCategories
-    });
-  }
-
-  let htmlContent = "";
-
-  groups.forEach(function(group, groupIdx) {
-    let groupCategoriesHtml = "";
-
-    group.categories.forEach(function(catKey) {
-      const category = siteData[catKey];
-      if (!category) return;
-
-      const categoryItems = category.items || [];
-      
-      let itemsHtml = "";
-      if (categoryItems.length === 0) {
-        itemsHtml = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 1rem;">هیچ آیتمی در این دسته وجود ندارد.</td></tr>`;
-      } else {
-        itemsHtml = categoryItems.map(function(item) {
-          const hasOverride = Boolean(getContentOverride(item.id));
-          const hasBlocks = typeof getContentBlocks === "function" ? getContentBlocks(item).length > 0 : Boolean(item.content);
-          const statusBadge = hasOverride
-            ? '<span class="status success">ذخیره ادمین</span>'
-            : hasBlocks
-              ? '<span class="status pending">بلوک‌بندی</span>'
-              : '<span class="status cancelled">پیش‌فرض</span>';
-
-          return `
-            <tr>
-              <td><code>${item.id}</code></td>
-              <td><img src="${item.image || '../images/ravin.png'}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);" /></td>
-              <td style="font-weight: 500;">${item.title}</td>
-              <td>${statusBadge}</td>
-              <td style="display: flex; gap: 0.5rem; align-items: center;">
-                <button type="button" class="btn-secondary content-edit-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">ویرایش محتوا</button>
-                <button type="button" class="btn-secondary content-delete-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size: 13px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">حذف</button>
-              </td>
-            </tr>
-          `;
-        }).join("");
-      }
-
-      groupCategoriesHtml += `
-        <div class="admin-category-box" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.01); padding: 1.25rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04);">
-          <h4 style="margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; font-size: 15px;">
-            <i class="fa-solid fa-folder-open" style="color: #3b82f6;"></i>
-            ${category.title}
-            <span style="font-size: 11px; font-weight: normal; color: var(--text-muted); direction: ltr;">(${catKey})</span>
-          </h4>
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width: 15%;">شناسه</th>
-                  <th style="width: 10%;">تصویر</th>
-                  <th style="width: 50%;">عنوان آیتم</th>
-                  <th style="width: 13%;">وضعیت</th>
-                  <th style="width: 12%;">عملیات</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsHtml}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `;
-    });
-
-    const isOpen = "open";
-
-    htmlContent += `
-      <details class="admin-group-details" ${isOpen} style="margin-bottom: 1rem; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); overflow: hidden;">
-        <summary style="padding: 1.25rem; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); user-select: none; outline: none; list-style: none;">
-          <span>${group.title}</span>
-          <i class="fa-solid fa-chevron-down" style="font-size: 12px; transition: transform 0.3s;"></i>
-        </summary>
-        <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.04);">
-          ${groupCategoriesHtml}
-        </div>
-      </details>
-    `;
-  });
-
-  container.innerHTML = htmlContent;
-
-  container.querySelectorAll("details").forEach(function(det) {
-    const summary = det.querySelector("summary");
-    const icon = summary.querySelector("i");
-    if (det.open) {
-      icon.style.transform = "rotate(180deg)";
-    }
-    summary.addEventListener("click", function() {
-      setTimeout(function() {
-        icon.style.transform = det.open ? "rotate(180deg)" : "rotate(0deg)";
-      }, 50);
-    });
-  });
-
-  container.querySelectorAll(".content-edit-btn").forEach(function(button) {
-    button.addEventListener("click", function() {
-      openContentEditor(button.getAttribute("data-item-id"));
-    });
-  });
-  container.querySelectorAll(".content-delete-btn").forEach(function(button) {
-    button.addEventListener("click", function() {
-      deleteContentItem(button.getAttribute("data-item-id"));
-    });
-  });
 }
 
 function filterContentTable(query) {

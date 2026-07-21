@@ -202,6 +202,11 @@ function switchView(viewName) {
   document.getElementById("overlay").classList.remove("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Dynamically trigger rendering of site content if the view is active
+  if (viewName === "site-content" && typeof renderContentTable === "function") {
+    renderContentTable();
+  }
 }
 
 function initNavigation() {
