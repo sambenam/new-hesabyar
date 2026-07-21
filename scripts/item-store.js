@@ -122,10 +122,15 @@ function applyContentOverrides(data) {
     // 2. Insert added items for this category
     addedItems.forEach(function (item) {
       if (item.categoryKey === catKey) {
-        if (!category.items.some(i => i.id === item.id)) {
+        if (!category.items.some(function(i) { return i.id === item.id; })) {
           category.items.push(item);
         }
       }
+    });
+
+    // 2.5 Sort items numerically by ID (so they sit next to each other correctly, e.g. diploma-1, diploma-2, diploma-3)
+    category.items.sort(function (a, b) {
+      return String(a.id).localeCompare(String(b.id), undefined, { numeric: true, sensitivity: 'base' });
     });
 
     // 3. Map with edited overrides

@@ -366,7 +366,7 @@ function renderContentTable() {
       `;
     });
 
-    const isOpen = groupIdx === 0 ? "open" : "";
+    const isOpen = "open";
 
     htmlContent += `
       <details class="admin-group-details" ${isOpen} style="margin-bottom: 1rem; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); overflow: hidden;">

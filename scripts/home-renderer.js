@@ -9,7 +9,7 @@
   if (popularContainer && siteData.popularCourses && Array.isArray(siteData.popularCourses.items)) {
     const popularItems = siteData.popularCourses.items;
     if (popularItems.length > 0) {
-      popularContainer.innerHTML = popularItems.slice(0, 3).map(item => `
+      popularContainer.innerHTML = popularItems.map(item => `
         <li class="popular-courses_item">
           <div class="popular-courses_banner">
             <img src="${item.image || '../images/ravin.png'}" class="popular-courses_img" alt="${item.title}" />
@@ -24,6 +24,8 @@
           </div>
         </li>
       `).join("");
+    } else {
+      popularContainer.innerHTML = "";
     }
   }
 
@@ -32,7 +34,7 @@
   if (newCoursesContainer && siteData.newCourses && Array.isArray(siteData.newCourses.items)) {
     const newItems = siteData.newCourses.items;
     if (newItems.length > 0) {
-      newCoursesContainer.innerHTML = newItems.slice(0, 3).map(item => `
+      newCoursesContainer.innerHTML = newItems.map(item => `
         <li class="new-courses_item">
           <div class="new-courses_banner">
             <img src="${item.image || '../images/ravin.png'}" class="new-courses_img" alt="${item.title}" />
@@ -47,23 +49,25 @@
           </div>
         </li>
       `).join("");
+    } else {
+      newCoursesContainer.innerHTML = "";
     }
   }
 
-  // 3. FEATURED CONTENT (specials)
+  // 3. FEATURED CONTENT (specials) - Keep grid structure, but render up to 5 items if available
   const featuredGrid = document.querySelector(".featured-grid");
   if (featuredGrid && siteData.specials && Array.isArray(siteData.specials.items)) {
     const items = siteData.specials.items;
     if (items.length > 0) {
       const mainItem = items[0];
-      const smallItems = items.slice(1, 3);
+      const smallItems = items.slice(1);
       
       let smallHtml = '';
       if (smallItems.length > 0) {
         smallHtml = `
-          <div class="featured-small">
+          <div class="featured-small" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
             ${smallItems.map(item => `
-              <article class="featured-card">
+              <article class="featured-card" style="margin-bottom: 0;">
                 <a href="single-post.html?id=${encodeURIComponent(item.id)}" class="featured-content">
                   <span class="content-tag">ویژه</span>
                   <h3 class="featured-title">${item.title}</h3>
@@ -92,6 +96,8 @@
         </article>
         ${smallHtml}
       `;
+    } else {
+      featuredGrid.innerHTML = "";
     }
   }
 
@@ -100,7 +106,7 @@
   if (articleContainer && siteData.articles && Array.isArray(siteData.articles.items)) {
     const articleItems = siteData.articles.items;
     if (articleItems.length > 0) {
-      articleContainer.innerHTML = articleItems.slice(0, 3).map(item => `
+      articleContainer.innerHTML = articleItems.map(item => `
         <li class="article-item">
           <div class="article-image">
             <img src="${item.image || '../images/ravin.png'}" alt="${item.title}" />
@@ -131,6 +137,8 @@
           </div>
         </li>
       `).join("");
+    } else {
+      articleContainer.innerHTML = "";
     }
   }
 
@@ -139,7 +147,7 @@
   if (examsContainer && siteData.exams && Array.isArray(siteData.exams.items)) {
     const examItems = siteData.exams.items;
     if (examItems.length > 0) {
-      examsContainer.innerHTML = examItems.slice(0, 3).map(item => `
+      examsContainer.innerHTML = examItems.map(item => `
         <li class="exam-news_item">
           <div class="exam-news_content">
             <h3 class="exam-news_title">${item.title}</h3>
@@ -159,6 +167,8 @@
           </div>
         </li>
       `).join("");
+    } else {
+      examsContainer.innerHTML = "";
     }
   }
 })();
