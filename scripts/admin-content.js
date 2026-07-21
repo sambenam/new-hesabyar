@@ -363,9 +363,9 @@ function renderContentTable() {
         }
 
         groupCategoriesHtml += `
-          <div class="admin-category-box" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.01); padding: 1.25rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04);">
-            <h4 style="margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; font-size: 15px;">
-              <i class="fa-solid fa-folder-open" style="color: #3b82f6;"></i>
+          <div class="admin-category-box">
+            <h4>
+              <i class="fa-solid fa-folder-open"></i>
               ${category.title}
               <span style="font-size: 11px; font-weight: normal; color: var(--text-muted); direction: ltr;">(${catKey})</span>
             </h4>
@@ -392,12 +392,12 @@ function renderContentTable() {
       const isOpen = "open";
 
       htmlContent += `
-        <details class="admin-group-details" ${isOpen} style="margin-bottom: 1rem; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); overflow: hidden;">
-          <summary style="padding: 1.25rem; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); user-select: none; outline: none; list-style: none;">
+        <details class="admin-group-details" ${isOpen}>
+          <summary>
             <span>${group.title}</span>
             <i class="fa-solid fa-chevron-down" style="font-size: 12px; transition: transform 0.3s;"></i>
           </summary>
-          <div style="padding: 1.25rem; border-top: 1px solid rgba(255,255,255,0.04);">
+          <div class="admin-group-content" style="padding: 1.25rem; border-top: 1px solid rgba(0,0,0,0.04);">
             ${groupCategoriesHtml}
           </div>
         </details>

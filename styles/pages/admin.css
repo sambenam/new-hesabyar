@@ -1270,3 +1270,125 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   CUSTOM SITE CONTENT WORKSPACE (GLASSMORPHISM)
+   ============================================ */
+.admin-group-details {
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.35) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.admin-group-details:hover {
+    background: rgba(255, 255, 255, 0.45) !important;
+    box-shadow: var(--shadow-soft);
+}
+
+.admin-group-details summary {
+    padding: 1.25rem;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.4);
+    color: var(--text-primary) !important;
+    user-select: none;
+    outline: none;
+    list-style: none;
+    transition: background 0.3s;
+}
+
+.admin-group-details summary:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.admin-group-details summary i {
+    color: var(--primary) !important;
+}
+
+.admin-category-box {
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.2) !important;
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.admin-category-box h4 {
+    margin-bottom: 1rem;
+    color: var(--primary) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Data Table Overrides for light theme content */
+.admin-category-box .data-table {
+    background: transparent !important;
+    border-collapse: collapse;
+}
+
+.admin-category-box .data-table th {
+    background: rgba(255, 255, 255, 0.4) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.05);
+}
+
+.admin-category-box .data-table td {
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+}
+
+.admin-category-box .data-table tr:hover td {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Styled Operation Buttons */
+.admin-category-box .content-edit-btn {
+    background: rgba(0, 122, 255, 0.08) !important;
+    color: var(--primary) !important;
+    border: 1px solid rgba(0, 122, 255, 0.2) !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all 0.25s ease !important;
+}
+
+.admin-category-box .content-edit-btn:hover {
+    background: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.25);
+}
+
+.admin-category-box .content-delete-btn {
+    background: rgba(255, 59, 48, 0.08) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(255, 59, 48, 0.2) !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all 0.25s ease !important;
+}
+
+.admin-category-box .content-delete-btn:hover {
+    background: var(--danger) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.25);
+}
