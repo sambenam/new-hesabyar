@@ -177,6 +177,30 @@ document.addEventListener("DOMContentLoaded", () => {
   initModals();
   initSearch();
 
+  // Handle direct hash navigation on page load
+  const currentHash = window.location.hash;
+  if (currentHash && currentHash.startsWith("#")) {
+    const viewName = currentHash.substring(1).replace("-list", "");
+    let mappedView = viewName;
+    if (["users", "users-list", "add-user", "user-roles"].includes(viewName)) {
+      mappedView = "users";
+    } else if (["products", "products-list", "add-product", "categories", "inventory"].includes(viewName)) {
+      mappedView = "products";
+    } else if (["general", "security", "notifications"].includes(viewName)) {
+      mappedView = "settings";
+    } else if (viewName === "site-content") {
+      mappedView = "site-content";
+    } else if (viewName === "analytics") {
+      mappedView = "analytics";
+    } else if (viewName === "messages") {
+      mappedView = "messages";
+    }
+
+    if (document.getElementById(`view-${mappedView}`)) {
+      switchView(mappedView);
+    }
+  }
+
   console.log("🎉 پنل مدیریت کل با موفقیت بارگذاری و فعال شد.");
 });
 
