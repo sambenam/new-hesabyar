@@ -1,4 +1,6 @@
 const ITEM_CONTENT_STORAGE_KEY = "irHesabdarItemContent";
+const ADDED_ITEMS_KEY = "irHesabdarAddedItems";
+const DELETED_ITEMS_KEY = "irHesabdarDeletedItems";
 
 function loadContentOverrides() {
   try {
@@ -13,13 +15,17 @@ function loadContentOverrides() {
 function saveContentOverride(itemId, payload) {
   const overrides = loadContentOverrides();
   const current = overrides[itemId] || {};
-  overrides[itemId] =
-    typeof payload === "object" && payload.content
-      ? {
-          content: payload.content,
-          excerpt: payload.excerpt !== undefined ? payload.excerpt : current.excerpt,
-        }
-      : { content: payload, excerpt: current.excerpt };
+  
+  if (typeof payload === "object") {
+    overrides[itemId] = {
+      content: payload.content !== undefined ? payload.content : current.content || payload,
+      excerpt: payload.excerpt !== undefined ? payload.excerpt : current.excerpt,
+      title: payload.title !== undefined ? payload.title : current.title,
+      image: payload.image !== undefined ? payload.image : current.image,
+    };
+  } else {
+    overrides[itemId] = { content: payload, excerpt: current.excerpt };
+  }
   localStorage.setItem(ITEM_CONTENT_STORAGE_KEY, JSON.stringify(overrides));
 }
 
@@ -37,27 +43,115 @@ function getContentOverride(itemId) {
   return saved.content || saved;
 }
 
+// Added Items Helpers
+function loadAddedItems() {
+  try {
+    const raw = localStorage.getItem(ADDED_ITEMS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    console.warn("item-store: خطا در خواندن AddedItems", error);
+    return [];
+  }
+}
+
+function saveAddedItem(item) {
+  const items = loadAddedItems();
+  const index = items.findIndex(i => i.id === item.id);
+  if (index > -1) {
+    items[index] = item;
+  } else {
+    items.push(item);
+  }
+  localStorage.setItem(ADDED_ITEMS_KEY, JSON.stringify(items));
+}
+
+function removeAddedItem(itemId) {
+  const items = loadAddedItems();
+  const filtered = items.filter(i => i.id !== itemId);
+  localStorage.setItem(ADDED_ITEMS_KEY, JSON.stringify(filtered));
+}
+
+// Deleted Items Helpers
+function loadDeletedItemIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_ITEMS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    console.warn("item-store: خطا در خواندن DeletedItems", error);
+    return [];
+  }
+}
+
+function addDeletedItemId(itemId) {
+  const ids = loadDeletedItemIds();
+  if (!ids.includes(itemId)) {
+    ids.push(itemId);
+  }
+  localStorage.setItem(DELETED_ITEMS_KEY, JSON.stringify(ids));
+  
+  // also remove from added items if it was added
+  removeAddedItem(itemId);
+}
+
+function removeDeletedItemId(itemId) {
+  const ids = loadDeletedItemIds();
+  const filtered = ids.filter(id => id !== itemId);
+  localStorage.setItem(DELETED_ITEMS_KEY, JSON.stringify(filtered));
+}
+
 function applyContentOverrides(data) {
   const overrides = loadContentOverrides();
+  const deletedIds = loadDeletedItemIds();
+  const addedItems = loadAddedItems();
 
   Object.keys(data).forEach(function (catKey) {
     const category = data[catKey];
-    if (!category || !Array.isArray(category.items)) {
+    if (!category) {
       return;
     }
 
+    if (!Array.isArray(category.items)) {
+      category.items = [];
+    }
+
+    // 1. Filter out deleted items
+    category.items = category.items.filter(function (item) {
+      return !deletedIds.includes(item.id);
+    });
+
+    // 2. Insert added items for this category
+    addedItems.forEach(function (item) {
+      if (item.categoryKey === catKey) {
+        if (!category.items.some(i => i.id === item.id)) {
+          category.items.push(item);
+        }
+      }
+    });
+
+    // 3. Map with edited overrides
     category.items = category.items.map(function (item) {
       const saved = overrides[item.id];
       if (!saved) {
         return item;
       }
 
-      const patch = {
-        content: saved.content || saved,
-      };
+      const patch = {};
+      if (saved.content !== undefined) {
+        patch.content = saved.content;
+      } else if (saved.body !== undefined) {
+        patch.content = saved.body;
+      } else {
+        patch.content = saved;
+      }
 
       if (saved.excerpt !== undefined) {
         patch.excerpt = saved.excerpt;
+      }
+      if (saved.title !== undefined) {
+        patch.title = saved.title;
+      }
+      if (saved.image !== undefined) {
+        patch.image = saved.image;
       }
 
       return Object.assign({}, item, patch);

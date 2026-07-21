@@ -671,9 +671,14 @@
           <div class="glass-card">
             <div
               class="card-header"
-              style="display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap"
+              style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap"
             >
-              <h2>لیست آیتم‌های سایت</h2>
+              <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <h2>لیست آیتم‌های سایت</h2>
+                <button type="button" class="btn-primary" id="addNewContentItemBtn" style="background-color: #10b981; border-color: #10b981; font-size: 14px; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
+                  + افزودن آیتم جدید
+                </button>
+              </div>
               <input
                 type="text"
                 id="contentTableSearch"
@@ -682,20 +687,7 @@
                 style="max-width: 280px"
               />
             </div>
-            <div class="table-responsive">
-              <table class="data-table" id="siteContentTable">
-                <thead>
-                  <tr>
-                    <th>شناسه</th>
-                    <th>عنوان</th>
-                    <th>دسته</th>
-                    <th>وضعیت</th>
-                    <th>عملیات</th>
-                  </tr>
-                </thead>
-                <tbody id="siteContentTableBody"></tbody>
-              </table>
-            </div>
+            <div id="groupedContentContainer" class="grouped-content-container"></div>
           </div>
         </div>
       </div>
@@ -941,11 +933,21 @@
           <input type="hidden" id="editContentItemId" />
 
           <div class="content-editor_meta">
-            <p><strong id="editContentTitle"></strong></p>
             <p class="content-editor_meta-sub" id="editContentCategory"></p>
           </div>
 
-          <div class="form-group">
+          <div class="form-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group" style="flex: 1;">
+              <label>عنوان آیتم (Title)</label>
+              <input type="text" id="editContentTitleInput" class="form-control" placeholder="عنوان آیتم" required />
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label>آدرس تصویر شاخص (Image URL)</label>
+              <input type="text" id="editContentImageInput" class="form-control" placeholder="آدرس تصویر (مثال: ../images/ravin.png)" />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
             <label>خلاصه (excerpt)</label>
             <textarea
               id="editContentExcerpt"
@@ -1052,6 +1054,80 @@
               بازگشت به پیش‌فرض
             </button>
             <button type="submit" class="btn-primary">ذخیره محتوا</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD NEW ITEM -->
+    <div class="modal-overlay" id="addNewItemModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>افزودن آیتم جدید به سایت</h3>
+          <button class="modal-close" onclick="closeModal('addNewItemModal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="addNewItemForm">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label>شناسه یکتای آیتم (ID به انگلیسی)</label>
+            <input
+              type="text"
+              id="newItemId"
+              class="form-control"
+              placeholder="مثال: custom-article-1"
+              required
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label>دسته هدف (کجا نمایش داده شود؟)</label>
+            <select id="newItemCategory" class="form-control select-dropdown" required style="width: 100%; padding: 8px; border-radius: 6px; background: #1e293b; color: #f1f5f9; border: 1px solid rgba(255,255,255,0.1);">
+              <!-- Populate dynamically with JS -->
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label>عنوان آیتم</label>
+            <input
+              type="text"
+              id="newItemTitle"
+              class="form-control"
+              placeholder="عنوان آیتم جدید"
+              required
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label>آدرس تصویر شاخص</label>
+            <input
+              type="text"
+              id="newItemImage"
+              class="form-control"
+              placeholder="../images/ravin.png"
+              value="../images/ravin.png"
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label>خلاصه (Excerpt)</label>
+            <textarea
+              id="newItemExcerpt"
+              class="form-control"
+              rows="3"
+              placeholder="توضیح کوتاه برای نمایش در کارت‌ها"
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="closeModal('addNewItemModal')"
+            >
+              انصراف
+            </button>
+            <button type="submit" class="btn-primary">ثبت آیتم جدید</button>
           </div>
         </form>
       </div>
