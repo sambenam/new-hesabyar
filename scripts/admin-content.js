@@ -171,6 +171,24 @@ function initContentAdmin() {
     videoEnabled.addEventListener("change", toggleVideoFields);
   }
 
+  // Trigger rendering when the "Site Content" view is opened in the admin sidebar or via hash
+  const sidebarBtn = document.querySelector('li[data-view="site-content"] a, a[href="#site-content"]');
+  if (sidebarBtn) {
+    sidebarBtn.addEventListener("click", function () {
+      renderContentTable();
+    });
+  }
+
+  window.addEventListener("hashchange", function () {
+    if (window.location.hash === "#site-content") {
+      renderContentTable();
+    }
+  });
+
+  if (window.location.hash === "#site-content") {
+    renderContentTable();
+  }
+
   renderContentTable();
 }
 
