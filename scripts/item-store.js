@@ -5,7 +5,9 @@ const DELETED_ITEMS_KEY = "irHesabdarDeletedItems";
 function loadContentOverrides() {
   try {
     const raw = localStorage.getItem(ITEM_CONTENT_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
   } catch (error) {
     console.warn("item-store: خطا در خواندن localStorage", error);
     return {};
@@ -47,7 +49,9 @@ function getContentOverride(itemId) {
 function loadAddedItems() {
   try {
     const raw = localStorage.getItem(ADDED_ITEMS_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     console.warn("item-store: خطا در خواندن AddedItems", error);
     return [];
@@ -75,7 +79,9 @@ function removeAddedItem(itemId) {
 function loadDeletedItemIds() {
   try {
     const raw = localStorage.getItem(DELETED_ITEMS_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     console.warn("item-store: خطا در خواندن DeletedItems", error);
     return [];
