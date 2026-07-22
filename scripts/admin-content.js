@@ -1028,6 +1028,52 @@ function saveEditedContent() {
     applyContentOverrides(siteData);
   }
 
+  // AUTOMATIC REVERSE SYNC: Content to Product
+  if (downloads && downloads.length > 0) {
+    const firstFile = downloads[0];
+    const productsRaw = localStorage.getItem("irHesabdarProducts");
+    let products = [];
+    if (productsRaw) {
+      try {
+        products = JSON.parse(productsRaw);
+      } catch (e) {}
+    }
+    if (!Array.isArray(products)) products = [];
+
+    const existingIdx = products.findIndex(function(p) { return String(p.id) === String(contentEditorState.itemId); });
+    const finalTitle = title || (found ? found.item.title : "") || firstFile.title;
+    const finalImage = image || (found ? found.item.image : "") || "../images/ravin.png";
+    const finalPrice = existingIdx > -1 ? products[existingIdx].price : 50000;
+
+    const updatedProd = {
+      id: contentEditorState.itemId,
+      name: finalTitle,
+      category: firstFile.type || "pdf",
+      price: finalPrice,
+      fileUrl: firstFile.url,
+      fileSize: firstFile.size || "10MB",
+      img: finalImage
+    };
+
+    if (existingIdx > -1) {
+      products[existingIdx] = updatedProd;
+    } else {
+      products.unshift(updatedProd);
+    }
+
+    localStorage.setItem("irHesabdarProducts", JSON.stringify(products));
+
+    if (typeof appState !== "undefined") {
+      appState.products = products;
+      if (typeof renderProductsTable === "function") {
+        renderProductsTable();
+      }
+      if (typeof renderDashboardProducts === "function") {
+        renderDashboardProducts();
+      }
+    }
+  }
+
   closeModal("editContentModal");
   renderContentTable();
   showToast("محتوای «" + contentEditorState.itemId + "» با موفقیت ذخیره شد", "success");
