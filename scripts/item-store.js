@@ -108,7 +108,11 @@ function removeDeletedItemId(itemId) {
 function applyContentOverrides(data) {
   const overrides = loadContentOverrides();
   const deletedIds = loadDeletedItemIds();
-  const addedItems = loadAddedItems();
+  
+  // Defensive: filter out any invalid or null items from loadAddedItems()
+  const addedItems = loadAddedItems().filter(function (item) {
+    return item && typeof item === 'object' && item.id;
+  });
 
   Object.keys(data).forEach(function (catKey) {
     const category = data[catKey];
@@ -120,15 +124,15 @@ function applyContentOverrides(data) {
       category.items = [];
     }
 
-    // 1. Filter out deleted items
+    // 1. Filter out deleted items and ensure elements are valid objects
     category.items = category.items.filter(function (item) {
-      return !deletedIds.includes(item.id);
+      return item && typeof item === 'object' && item.id && !deletedIds.includes(item.id);
     });
 
     // 2. Insert added items for this category
     addedItems.forEach(function (item) {
       if (item.categoryKey === catKey) {
-        if (!category.items.some(function(i) { return i.id === item.id; })) {
+        if (!category.items.some(function(i) { return i && i.id === item.id; })) {
           category.items.push(item);
         }
       }
@@ -136,13 +140,17 @@ function applyContentOverrides(data) {
 
     // 2.5 Sort items numerically by ID (so they sit next to each other correctly, e.g. diploma-1, diploma-2, diploma-3)
     category.items.sort(function (a, b) {
+      if (!a || !b || !a.id || !b.id) return 0;
       return String(a.id).localeCompare(String(b.id), undefined, { numeric: true, sensitivity: 'base' });
     });
 
     // 3. Map with edited overrides
     category.items = category.items.map(function (item) {
+      if (!item || !item.id) {
+        return item;
+      }
       const saved = overrides[item.id];
-      if (!saved) {
+      if (!saved || typeof saved !== 'object') {
         return item;
       }
 
@@ -151,8 +159,6 @@ function applyContentOverrides(data) {
         patch.content = saved.content;
       } else if (saved.body !== undefined) {
         patch.content = saved.body;
-      } else {
-        patch.content = saved;
       }
 
       if (saved.excerpt !== undefined) {
