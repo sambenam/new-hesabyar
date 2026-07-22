@@ -325,6 +325,18 @@ function renderDashboardOrders() {
     .join("");
 }
 
+function formatProductPrice(price) {
+  if (typeof price === "number") {
+    return price.toLocaleString() + " تومان";
+  }
+  // Try to parse out the numbers if it is a string with non-numeric characters
+  const cleanNum = parseFloat(String(price || "").replace(/[^\d.]/g, ""));
+  if (!isNaN(cleanNum)) {
+    return cleanNum.toLocaleString() + " تومان";
+  }
+  return String(price || "۰ تومان");
+}
+
 function renderDashboardProducts() {
   const container = document.getElementById("dashboardTopProducts");
   if (!container) return;
@@ -339,7 +351,7 @@ function renderDashboardProducts() {
                 <p>شناسه: ${prod.id}</p>
             </div>
             <div class="product-price">
-                <span style="font-weight: bold; color: var(--success);">${Number(prod.price).toLocaleString()} تومان</span>
+                <span style="font-weight: bold; color: var(--success);">${formatProductPrice(prod.price)}</span>
             </div>
         </div>
     `,
@@ -376,9 +388,11 @@ function renderProductsTable() {
   const searchQuery = document.getElementById("productTableSearch") ? document.getElementById("productTableSearch").value.trim().toLowerCase() : "";
   
   const filteredProducts = appState.products.filter(p => {
-    return String(p.name).toLowerCase().includes(searchQuery) ||
-           String(p.id).toLowerCase().includes(searchQuery) ||
-           String(p.category).toLowerCase().includes(searchQuery);
+    return p && p.id && (
+           String(p.name || "").toLowerCase().includes(searchQuery) ||
+           String(p.id || "").toLowerCase().includes(searchQuery) ||
+           String(p.category || "").toLowerCase().includes(searchQuery)
+    );
   });
 
   tbody.innerHTML = filteredProducts
@@ -386,9 +400,9 @@ function renderProductsTable() {
       (prod) => `
         <tr>
             <td><img src="${prod.img || '../images/ravin.png'}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt=""></td>
-            <td style="font-weight: 500;">${prod.name}</td>
-            <td><span class="status pending" style="background: rgba(0, 122, 255, 0.1); color: var(--primary); font-size: 11px; font-weight: bold; border-radius: 6px; padding: 4px 8px;">${prod.category.toUpperCase()}</span></td>
-            <td style="font-weight: bold; color: var(--success);">${Number(prod.price).toLocaleString()} تومان</td>
+            <td style="font-weight: 500;">${prod.name || "بدون نام"}</td>
+            <td><span class="status pending" style="background: rgba(0, 122, 255, 0.1); color: var(--primary); font-size: 11px; font-weight: bold; border-radius: 6px; padding: 4px 8px;">${String(prod.category || "FILE").toUpperCase()}</span></td>
+            <td style="font-weight: bold; color: var(--success);">${formatProductPrice(prod.price)}</td>
             <td><code>${prod.id}</code></td>
             <td>
                 <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px; cursor: pointer; border-radius: 6px;" onclick="editProduct('${prod.id}')">ویرایش قیمت</button>
